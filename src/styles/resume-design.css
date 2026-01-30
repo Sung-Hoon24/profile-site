@@ -1,0 +1,138 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.a4-page {
+    width: 210mm;
+    height: 297mm;
+    padding: 12mm 15mm;
+    background: white;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Pretendard', sans-serif;
+    color: #222;
+}
+
+.resume-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+
+/* Header */
+.resume-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    margin-bottom: 5px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 65%;
+}
+
+.header-name {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.header-position {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    margin: 0;
+}
+
+.header-summary {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.5;
+    margin-top: 5px;
+    white-space: pre-wrap;
+}
+
+.header-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: #555;
+    padding-top: 4px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+/* Sections */
+.resume-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Gap handled by items for grid look */
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    border-bottom: 2px solid #222;
+    padding-bottom: 6px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+/* Row Layout (Experience/Education) */
+.resume-row {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 11px;
+    line-height: 1.4;
+    align-items: flex-start;
+}
+
+.resume-row:last-child {
+    border-bottom: none;
+}
+
+.col-date {
+    width: 18%;
+    font-weight: 700;
+    color: #333;
+    padding-right: 15px;
+    flex-shrink: 0;
+}
+
+.col-main {
+    width: 30%;
+    font-weight: 600;
+    color: #222;
+    padding-right: 15px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.col-desc {
+    flex: 1;
+    color: #555;
+    white-space: pre-wrap;
+}
+
+.sub-role {
+    font-weight: 400;
+    color: #555;
+    font-size: 0.95em;
+    margin-top: 2px;
+}

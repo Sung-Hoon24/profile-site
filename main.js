@@ -30,13 +30,15 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // --- Firestore Data Logic ---
-// We'll query all [data-editable] AND [data-editable-link]
+// We'll query all [data-editable], [data-settings-text], and [data-settings-link]
 let allEditableElements;
-let allLinkElements;
+let allSettingsTextElements;
+let allSettingsLinkElements;
 
 function updateSelectors() {
     allEditableElements = document.querySelectorAll('[data-editable]');
-    allLinkElements = document.querySelectorAll('[data-editable-link]');
+    allSettingsTextElements = document.querySelectorAll('[data-settings-text]');
+    allSettingsLinkElements = document.querySelectorAll('[data-settings-link]');
 }
 
 async function loadProfile() {
@@ -47,7 +49,7 @@ async function loadProfile() {
         if (docSnap.exists()) {
             const data = docSnap.data();
 
-            // Text Content
+            // 1. Inline Editable Text
             allEditableElements.forEach(el => {
                 const key = el.getAttribute('data-editable');
                 if (data[key]) {
@@ -60,9 +62,17 @@ async function loadProfile() {
                 }
             });
 
-            // Links
-            allLinkElements.forEach(el => {
-                const key = el.getAttribute('data-editable-link');
+            // 2. Settings Configured Text (Read-Only on Main Page)
+            allSettingsTextElements.forEach(el => {
+                const key = el.getAttribute('data-settings-text');
+                if (data[key]) {
+                    el.textContent = data[key];
+                }
+            });
+
+            // 3. Settings Configured Links (Read-Only on Main Page)
+            allSettingsLinkElements.forEach(el => {
+                const key = el.getAttribute('data-settings-link');
                 if (data[key]) {
                     el.href = data[key];
                 }
@@ -82,17 +92,11 @@ function enableEditMode() {
     updateSelectors();
     document.body.classList.add('edit-mode-active');
 
-    // Text Edits
+    // Text Edits (Only for [data-editable])
     allEditableElements.forEach(el => {
         el.contentEditable = 'true';
         el.classList.add('editable');
         el.addEventListener('blur', saveChange);
-    });
-
-    // Link Edits
-    allLinkElements.forEach(el => {
-        el.addEventListener('click', handleLinkClick);
-        el.title = "Shift+Click to edit URL";
     });
 }
 
@@ -105,12 +109,6 @@ function disableEditMode() {
         el.contentEditable = 'false';
         el.classList.remove('editable');
         el.removeEventListener('blur', saveChange);
-    });
-
-    // Link Edits
-    allLinkElements.forEach(el => {
-        el.removeEventListener('click', handleLinkClick);
-        el.removeAttribute('title');
     });
 }
 
@@ -126,34 +124,7 @@ function saveChange(e) {
     saveToFirestore(key, value);
 }
 
-function handleLinkClick(e) {
-    if (!currentUser) return;
-
-    const el = e.currentTarget;
-    const currentHref = el.getAttribute('href');
-
-    // Shift + Click to Edit
-    if (e.shiftKey) {
-        e.preventDefault(); // preventing navigation
-        const key = el.getAttribute('data-editable-link');
-        const displayHref = currentHref !== '#' ? currentHref : '';
-
-        const newUrl = prompt("🔗 링크 주소를 입력하세요 (예: https://naver.com):", displayHref);
-
-        if (newUrl !== null && newUrl.trim() !== '') {
-            el.href = newUrl;
-            saveToFirestore(key, newUrl);
-            alert('링크가 저장되었습니다!');
-        }
-    } else {
-        // Normal Click -> Only proceed if valid URL
-        if (currentHref === '#' || !currentHref) {
-            e.preventDefault();
-            alert('🔗 아직 링크가 설정되지 않았습니다.\\nShift + 클릭으로 링크를 먼저 설정해주세요!');
-        }
-        // else: let the browser open the link naturally (new tab via target="_blank")
-    }
-}
+// Link editing is now handled in settings.html, so handleLinkClick is removed.
 
 function saveToFirestore(key, value) {
     const docRef = doc(db, 'profiles', 'main');

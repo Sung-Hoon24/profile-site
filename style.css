@@ -685,7 +685,53 @@ footer {
   .tech-stack {
     flex-wrap: wrap;
   }
+}
 
+/* React Migration Styles */
+.print-container {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: black;
+  box-sizing: border-box;
+}
+
+.print-section {
+  margin-bottom: 20px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.print-section h2 {
+  font-size: 18px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  .print-container {
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
   .project-btn {
     display: block;
     text-align: center;
@@ -758,5 +804,428 @@ footer {
 
   .project-card .card-image {
     height: 150px;
+  }
+}
+
+/* ========================================
+   EXPORT / PRINT MODE (Ink Saving)
+   ======================================== */
+.print-mode {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  background-image: none !important;
+}
+
+.print-mode * {
+  color: #000000 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border-color: #000000 !important;
+}
+
+/* Specific overrides for aesthetics in print mode */
+.print-mode .glass-nav,
+.print-mode .cursor-glow,
+.print-mode .hero-visual,
+.print-mode .hero-btns,
+.print-mode .tech-stack span,
+.print-mode .export-buttons {
+  display: none !important;
+}
+
+.print-mode .section-title {
+  background: none;
+  -webkit-text-fill-color: #000000;
+  border-bottom: 2px solid #000000;
+  padding-bottom: 10px;
+}
+
+.print-mode .glass-card,
+.print-mode .project-card,
+.print-mode .glass-form input,
+.print-mode .glass-form textarea {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+  backdrop-filter: none !important;
+}
+
+.print-mode .skill-tag {
+  border: 1px solid #000000;
+  color: #000000 !important;
+}
+
+/* Layout Protection */
+.section,
+.container,
+.project-card,
+.glass-card,
+section {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.print-mode section {
+  min-height: auto !important;
+  padding: 2rem 0 !important;
+}
+
+/* --- Split View Architect --- */
+.builder-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: #111;
+}
+
+.builder-left {
+  flex: 4;
+  /* 40% */
+  background: #1a1a1a;
+  /* Dark Sidebar */
+  border-right: 1px solid #333;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.builder-right {
+  flex: 6;
+  /* 60% */
+  background: #e0e0e0;
+  /* Gray Background for Contrast */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  position: relative;
+}
+
+/* Editor Styles */
+.editor-panel {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.editor-header h2 {
+  color: white;
+  margin: 0;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: #333;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background: #444;
+}
+
+.icon-btn.save {
+  background: var(--primary-color);
+}
+
+.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Accordion UI */
+.accordion-item {
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  padding: 15px;
+  background: #2a2a2a;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  color: #eee;
+}
+
+.accordion-header:hover {
+  background: #333;
+}
+
+.accordion-content {
+  padding: 15px;
+  border-top: 1px solid #333;
+}
+
+/* Dark Inputs */
+.form-group-dark {
+  margin-bottom: 15px;
+}
+
+.form-group-dark label {
+  display: block;
+  color: #aaa;
+  margin-bottom: 5px;
+  font-size: 0.85rem;
+}
+
+.input-dark,
+.form-group-dark input,
+.form-group-dark textarea {
+  width: 100%;
+  background: #111;
+  border: 1px solid #444;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.input-dark:focus,
+.form-group-dark input:focus,
+.form-group-dark textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.form-row-dark {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Sub Cards */
+.sub-card {
+  background: #1e1e1e;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  border: 1px solid #333;
+}
+
+.card-top-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ff5555;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.add-btn-dark {
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  border: 1px dashed #555;
+  color: #aaa;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-btn-dark:hover {
+  background: #444;
+  color: white;
+  border-style: solid;
+}
+
+/* Preview Panel */
+.preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  padding: 10px 20px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.print-btn {
+  background: var(--primary-color);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.print-btn:hover {
+  transform: scale(1.05);
+}
+
+/* A4 Page */
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  padding: 20mm;
+  /* Standard Print Margin */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  color: black;
+  box-sizing: border-box;
+  transform-origin: top center;
+}
+
+/* Doc Styles (Serif/Clean) */
+.doc-header {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 20px;
+}
+
+.doc-name {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.doc-role {
+  font-size: 16px;
+  color: #555;
+  margin: 5px 0 10px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.doc-contact {
+  font-size: 14px;
+  color: #444;
+}
+
+.doc-section {
+  margin-bottom: 25px;
+}
+
+.doc-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  color: #000;
+}
+
+.doc-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.doc-item {
+  margin-bottom: 15px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+
+.item-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.item-date {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+}
+
+.item-subtitle {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Print Overrides */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .builder-layout {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .builder-left,
+  .preview-toolbar,
+  .no-print {
+    display: none !important;
+  }
+
+  .builder-right {
+    display: block;
+    padding: 0;
+    background: white;
+    overflow: visible;
+    flex: none;
+  }
+
+  .a4-page {
+    width: 100%;
+    margin: 0;
+    padding: 20mm;
+    /* Maintain internal padding */
+    box-shadow: none;
+    border: none;
+    transform: none !important;
   }
 }

@@ -1,0 +1,259 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.a4-page {
+    position: relative;
+    width: 210mm;
+    min-height: 297mm;
+    height: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+    background: white;
+    font-family: 'Pretendard', sans-serif;
+    color: #111;
+}
+
+/* preview 모드: 잘리지 않게 */
+.a4-page.preview {
+    height: auto;
+    min-height: 297mm;
+    overflow: visible;
+    padding: 15mm 18mm;
+    /* Padding moved here or kept shared if consistent */
+}
+
+/* pdf 모드: 1페이지 고정 */
+/* pdf 모드: 1페이지 고정 -> 자동 확장으로 변경 (잘림 방지) */
+.a4-page.pdf {
+    height: auto !important;
+    min-height: 297mm;
+    overflow: visible !important;
+    padding: 15mm 18mm;
+}
+
+.resume-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    /* Force top alignment */
+    gap: 0;
+    height: auto;
+    /* Let content determine height, don't force stretch */
+    min-height: 100%;
+}
+
+/* Header Config */
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+}
+
+.form-icon {
+    width: 50px;
+    height: 50px;
+    background: #FF5252;
+    /* Accent Color matching reference */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.form-title-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-title {
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+    color: #000;
+}
+
+.form-desc {
+    font-size: 11px;
+    color: #666;
+    max-width: 90%;
+    line-height: 1.4;
+}
+
+/* Sections */
+.form-section {
+    display: block;
+    /* Ensure it's not flex */
+    margin-bottom: 25px;
+    width: 100%;
+    /* SAFETY: Reset Global Styles pollution */
+    min-height: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+}
+
+.form-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    color: #000;
+}
+
+/* Field Style: Label: [Value]______ */
+.form-field-row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.field-bullet {
+    margin-right: 8px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.field-label {
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.field-input {
+    flex: 1;
+    border-bottom: 1px solid #777;
+    /* The "Underline" */
+    font-size: 13px;
+    padding: 0 5px 2px 5px;
+    font-weight: 600;
+    color: #000;
+    min-width: 50px;
+    /* ensure line exists even if empty */
+}
+
+/* Experience Box Style within Form */
+.form-exp-item {
+    margin-bottom: 12px;
+}
+
+.exp-header-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 4px;
+}
+
+.field-half {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+}
+
+.exp-desc-box {
+    margin-left: 15px;
+    /* Indent for desc */
+    font-size: 12px;
+    color: #444;
+    line-height: 1.4;
+    padding-left: 10px;
+    border-left: 2px solid #ddd;
+}
+
+/* Checkbox Style for Skills */
+.skills-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 30px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.checkbox-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Agreement / Footer */
+.form-footer {
+    margin-top: auto;
+    /* Push to bottom if space permits */
+    padding-top: 10px;
+}
+
+.agreement-text {
+    font-size: 10px;
+    color: #555;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.signature-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+        /* Reset browser margin, we handle padding */
+    }
+
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: white;
+    }
+
+    /* Hide non-printable elements */
+    .preview-panel,
+    .preview-toolbar,
+    .editor-panel,
+    .builder-layout {
+        display: none !important;
+    }
+
+    #root,
+    .builder-right {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: visible !important;
+    }
+
+    /* Target the paper directly */
+    .a4-page {
+        width: 210mm;
+        min-height: 297mm;
+        height: auto;
+        overflow: visible !important;
+        margin: 0 auto;
+        border: none;
+        box-shadow: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        print-color-adjust: exact;
+    }
+}

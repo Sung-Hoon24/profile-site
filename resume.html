@@ -199,12 +199,100 @@
         .login-notice.show {
             display: block;
         }
+
+        /* ------------------------------------------------------------------
+           [A4 출력 최적화]
+           - 배경: 흰색 / 글자: 검은색 (잉크 절약)
+           - 사이즈: A4 규격에 맞춰 85% 축소
+           - 레이아웃: 카드 테두리 변경, 잘림 방지
+           - 숨김: 버튼 등 불필요 요소
+        ------------------------------------------------------------------ */
+        @media print,
+        .print-mode {
+
+            /* 1. 잉크 절약 모드 */
+            body,
+            .resume-container,
+            .resume-section {
+                background: white !important;
+                color: black !important;
+                text-shadow: none !important;
+                border: none !important;
+            }
+
+            .resume-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+                /* A4 한 눈에 들어오게 축소 */
+                transform: scale(0.85);
+                transform-origin: top left;
+            }
+
+            /* 2. 타이틀 & 텍스트 스타일 재정의 */
+            .resume-header h1 {
+                background: none !important;
+                -webkit-text-fill-color: black !important;
+                color: black !important;
+                font-size: 2.5rem !important;
+            }
+
+            .resume-section h2 {
+                color: black !important;
+                border-bottom: 2px solid #000;
+                padding-bottom: 5px;
+            }
+
+            .resume-section h2::before {
+                background: black !important;
+            }
+
+            /* 3. 카드 디자인 변경 (종이 인쇄용) */
+            .resume-section {
+                border-bottom: 1px solid #ddd !important;
+                border-radius: 0 !important;
+                margin-bottom: 20px !important;
+                padding: 10px 0 !important;
+                /* ★핵심: 섹션이 페이지 넘김 시 잘리지 않도록 방어★ */
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* 입력창 스타일 제거 (일반 텍스트처럼 보이게) */
+            .form-input {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                color: black !important;
+                resize: none;
+            }
+
+            /* 4. 불필요한 요소 숨김 */
+            .save-btn,
+            .back-link,
+            .cursor-glow,
+            .login-notice,
+            #statusMessage,
+            button {
+                display: none !important;
+            }
+
+            /* 경험/교육 카드 테두리 제거 */
+            .experience-item,
+            .education-item {
+                background: transparent !important;
+                border: none !important;
+                border-left: 3px solid #000 !important;
+                padding-left: 15px !important;
+                margin-left: 5px;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="cursor-glow"></div>
-
     <a href="./index.html" class="back-link">← 홈으로</a>
 
     <div class="resume-container">
@@ -250,60 +338,27 @@
                 </div>
             </div>
 
-            <!-- 경력 사항 -->
+            <!-- 경력 사항 (Dynamic Rendering) -->
             <div class="resume-section">
-                <h2>경력 사항</h2>
-                <div class="experience-item">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>회사명</label>
-                            <input type="text" class="form-input" id="exp1_company" placeholder="(주)코다리테크"
-                                data-field="exp1_company">
-                        </div>
-                        <div class="form-group">
-                            <label>직책</label>
-                            <input type="text" class="form-input" id="exp1_role" placeholder="시니어 개발자"
-                                data-field="exp1_role">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>근무 기간</label>
-                            <input type="text" class="form-input" id="exp1_period" placeholder="2020.03 - 현재"
-                                data-field="exp1_period">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>주요 업무</label>
-                        <textarea class="form-input" id="exp1_desc" placeholder="담당했던 프로젝트와 성과를 작성해주세요..."
-                            data-field="exp1_desc"></textarea>
-                    </div>
+                <h2>
+                    경력 사항
+                    <button type="button" id="addExpBtn" class="add-btn"
+                        style="font-size:0.8rem; margin-left:auto; padding:5px 10px;">+ 추가</button>
+                </h2>
+                <div id="experience-list">
+                    <!-- 자바스크립트가 이곳에 데이터를 그립니다 -->
                 </div>
             </div>
 
-            <!-- 학력 사항 -->
+            <!-- 학력 사항 (Dynamic Rendering) -->
             <div class="resume-section">
-                <h2>학력 사항</h2>
-                <div class="education-item">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>학교명</label>
-                            <input type="text" class="form-input" id="edu1_school" placeholder="코다리대학교"
-                                data-field="edu1_school">
-                        </div>
-                        <div class="form-group">
-                            <label>전공</label>
-                            <input type="text" class="form-input" id="edu1_major" placeholder="컴퓨터공학"
-                                data-field="edu1_major">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>졸업년도</label>
-                            <input type="text" class="form-input" id="edu1_year" placeholder="2020년 졸업"
-                                data-field="edu1_year">
-                        </div>
-                    </div>
+                <h2>
+                    학력 사항
+                    <button type="button" id="addEduBtn" class="add-btn"
+                        style="font-size:0.8rem; margin-left:auto; padding:5px 10px;">+ 추가</button>
+                </h2>
+                <div id="education-list">
+                    <!-- 자바스크립트가 이곳에 데이터를 그립니다 -->
                 </div>
             </div>
 
