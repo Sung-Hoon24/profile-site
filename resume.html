@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>이력서 | KODARI.DEV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* Resume Page Specific Styles */
+        .resume-container {
+            max-width: 900px;
+            margin: 100px auto 50px;
+            padding: 2rem;
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .resume-header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .resume-section h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .resume-section h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .experience-item,
+        .education-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .experience-item h3,
+        .education-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .save-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(157, 78, 221, 0.4);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status-message.success {
+            display: block;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 0.8rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);
+        }
+
+        .login-notice {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 100, 100, 0.1);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .login-notice.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-glow"></div>
+
+    <a href="./index.html" class="back-link">← 홈으로</a>
+
+    <div class="resume-container">
+        <div class="resume-header">
+            <h1>이력서</h1>
+            <p>나만의 프리미엄 이력서를 작성해보세요</p>
+        </div>
+
+        <div id="loginNotice" class="login-notice">
+            <h3>🔐 로그인이 필요합니다</h3>
+            <p>이력서를 저장하려면 먼저 <a href="./index.html">홈 페이지</a>에서 로그인해주세요.</p>
+        </div>
+
+        <form id="resumeForm">
+            <!-- 기본 정보 -->
+            <div class="resume-section">
+                <h2>기본 정보</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>이름</label>
+                        <input type="text" class="form-input" id="name" placeholder="홍길동" data-field="name">
+                    </div>
+                    <div class="form-group">
+                        <label>직함 / 포지션</label>
+                        <input type="text" class="form-input" id="position" placeholder="풀스택 개발자" data-field="position">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>이메일</label>
+                        <input type="email" class="form-input" id="email" placeholder="hello@example.com"
+                            data-field="email">
+                    </div>
+                    <div class="form-group">
+                        <label>전화번호</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="010-1234-5678" data-field="phone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>자기소개</label>
+                    <textarea class="form-input" id="summary" placeholder="간단한 자기소개를 작성해주세요..."
+                        data-field="summary"></textarea>
+                </div>
+            </div>
+
+            <!-- 경력 사항 -->
+            <div class="resume-section">
+                <h2>경력 사항</h2>
+                <div class="experience-item">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>회사명</label>
+                            <input type="text" class="form-input" id="exp1_company" placeholder="(주)코다리테크"
+                                data-field="exp1_company">
+                        </div>
+                        <div class="form-group">
+                            <label>직책</label>
+                            <input type="text" class="form-input" id="exp1_role" placeholder="시니어 개발자"
+                                data-field="exp1_role">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>근무 기간</label>
+                            <input type="text" class="form-input" id="exp1_period" placeholder="2020.03 - 현재"
+                                data-field="exp1_period">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>주요 업무</label>
+                        <textarea class="form-input" id="exp1_desc" placeholder="담당했던 프로젝트와 성과를 작성해주세요..."
+                            data-field="exp1_desc"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 학력 사항 -->
+            <div class="resume-section">
+                <h2>학력 사항</h2>
+                <div class="education-item">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>학교명</label>
+                            <input type="text" class="form-input" id="edu1_school" placeholder="코다리대학교"
+                                data-field="edu1_school">
+                        </div>
+                        <div class="form-group">
+                            <label>전공</label>
+                            <input type="text" class="form-input" id="edu1_major" placeholder="컴퓨터공학"
+                                data-field="edu1_major">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>졸업년도</label>
+                            <input type="text" class="form-input" id="edu1_year" placeholder="2020년 졸업"
+                                data-field="edu1_year">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 보유 기술 -->
+            <div class="resume-section">
+                <h2>보유 기술</h2>
+                <div class="form-group">
+                    <label>기술 스택 (쉼표로 구분)</label>
+                    <textarea class="form-input" id="skills"
+                        placeholder="JavaScript, React, Node.js, Python, Firebase..." data-field="skills"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn" id="saveBtn">💾 이력서 저장</button>
+            <div id="statusMessage" class="status-message"></div>
+        </form>
+    </div>
+
+    <script type="module" src="/resume.js"></script>
+</body>
+
+</html>
