@@ -149,6 +149,14 @@
     border-color: #666;
 }
 
+/* Ensure zoom controls are clickable above overlay */
+.zoom-controls,
+.zoom-btn {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
 .btn-save {
     background: linear-gradient(135deg, #bb86fc 0%, #9a67ea 100%);
     border: none;
@@ -188,6 +196,25 @@
     user-select: none;
     background-image: radial-gradient(#222 1px, transparent 1px);
     background-size: 20px 20px;
+}
+
+/* Scrollbar for Stage */
+.preview-stage::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.preview-stage::-webkit-scrollbar-track {
+    background: #111;
+}
+
+.preview-stage::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+}
+
+.preview-stage::-webkit-scrollbar-thumb:hover {
+    background: #666;
 }
 
 /* Paper Wrapper */

@@ -18,9 +18,12 @@ const Home = () => (
     </div>
 );
 
+import Navigator from './components/Navigator';
+
 function App() {
     return (
         <ResumeProvider>
+            <Navigator /> {/* Global Navigation */}
             <Routes>
                 {/* 1. Main Landing Page */}
                 <Route path="/" element={<Home />} />

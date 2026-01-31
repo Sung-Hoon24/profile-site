@@ -9,7 +9,10 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
     console.log('[ResumePreviewModal] Data Prop:', data); // Debug Log
     const stageRef = useRef(null);
     const paperRef = useRef(null);
-    const scale = useA4Scale(stageRef);
+    const autoScale = useA4Scale(stageRef);
+    const [zoomMode, setZoomMode] = useState('fit'); // 'fit' | '100'
+
+    const scale = zoomMode === 'fit' ? autoScale : 1.0;
 
     // Toolbar States
     const [quality, setQuality] = useState(2); // 1.5, 2, 3
@@ -86,6 +89,32 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                                 Force 1-Page
                             </label>
                         </div>
+
+                        <div className="toolbar-group">
+                            <label className="toolbar-label">Zoom:</label>
+                            <div className="zoom-controls">
+                                <button
+                                    className={`zoom-btn ${zoomMode === 'fit' ? 'active' : ''}`}
+                                    onClick={(e) => {
+                                        console.log('FIT clicked');
+                                        e.stopPropagation();
+                                        setZoomMode('fit');
+                                    }}
+                                >
+                                    FIT
+                                </button>
+                                <button
+                                    className={`zoom-btn ${zoomMode === '100' ? 'active' : ''}`}
+                                    onClick={(e) => {
+                                        console.log('100% clicked');
+                                        e.stopPropagation();
+                                        setZoomMode('100');
+                                    }}
+                                >
+                                    100%
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="preview-actions">
@@ -107,12 +136,14 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                 </div>
 
                 {/* Stage */}
-                <div className="preview-stage" ref={stageRef}>
+                <div className="preview-stage" ref={stageRef} style={{ overflow: zoomMode === '100' ? 'auto' : 'hidden', display: zoomMode === '100' ? 'block' : 'grid' }}>
                     {/* Transform Wrapper */}
                     <div
                         className="paper-transform-wrapper"
                         style={{
                             transform: `scale(${scale})`,
+                            transformOrigin: zoomMode === '100' ? 'top center' : 'center',
+                            margin: zoomMode === '100' ? '40px auto' : '0'
                         }}
                     >
                         {/* The Actual A4 Paper DOM - Allow auto height for overflow */}

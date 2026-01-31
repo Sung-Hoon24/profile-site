@@ -67,7 +67,9 @@ const EditorPanel = () => {
                 <h2>Editor</h2>
                 {/* ... header actions ... */}
                 <div className="editor-actions">
-                    {/* Actions preserved */}
+                    <button onClick={saveResume} className="save-btn-primary">
+                        {user ? '☁️ Save Checkpoint' : '☁️ Save (Login Req)'}
+                    </button>
                 </div>
             </div>
 

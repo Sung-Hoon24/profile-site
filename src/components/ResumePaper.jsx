@@ -163,7 +163,7 @@ const ResumePaper = forwardRef(({ data }, ref) => {
                     <div className="signature-row">
                         <div className="field-half">
                             <span className="field-label">Signature:</span>
-                            <div className="field-input" style={{ fontFamily: 'cursive', fontSize: '16px' }}>{data.basicInfo?.fullName}</div>
+                            <div className="field-input" style={{ fontFamily: '"Dancing Script", cursive', fontSize: '24px', lineHeight: '1.2' }}>{data.basicInfo?.fullName}</div>
                         </div>
                         <div className="field-half">
                             <span className="field-label">Date:</span>
