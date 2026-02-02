@@ -2,7 +2,8 @@
 .preview-modal-overlay {
     position: fixed;
     inset: 0;
-    z-index: 1000;
+    z-index: 11000;
+    /* Higher than global navigator (10000) */
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(8px);
     display: flex;
@@ -133,20 +134,31 @@
 }
 
 .btn-close {
-    background: transparent;
-    border: 1px solid #444;
-    color: #aaa;
-    padding: 8px 16px;
+    background: linear-gradient(to bottom, #f1f8e9 0%, #dcedc8 100%);
+    /* Light Green Gradient */
+    border: 1px solid #c5e1a5;
+    color: #33691e;
+    /* Dark Green Text */
+    padding: 8px 18px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
-    font-weight: 500;
+    font-weight: 700;
+    margin-right: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .btn-close:hover {
-    background: #2a2a2a;
-    color: white;
-    border-color: #666;
+    background: linear-gradient(to bottom, #dcedc8 0%, #c5e1a5 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #1b5e20;
+    border-color: #aed581;
+}
+
+.btn-close:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Ensure zoom controls are clickable above overlay */

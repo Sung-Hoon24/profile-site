@@ -61,6 +61,7 @@ export const ResumeProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false); // Add saving state
 
     // 2. Sync: Save to LocalStorage on every change
     useEffect(() => {
@@ -75,16 +76,20 @@ export const ResumeProvider = ({ children }) => {
             setUser(currentUser);
             if (currentUser) {
                 // If user logs in, we might want to fetch cloud data.
-                await loadResumeFromCloud();
+                await loadResumeFromCloud(currentUser.uid);
+            } else {
+                // LOGOUT: Reset data to prevent privacy leak
+                setData(DEFAULT_SCHEMA);
             }
             setLoading(false);
         });
         return () => unsubscribe();
     }, []);
 
-    const loadResumeFromCloud = async () => {
+    const loadResumeFromCloud = async (uid) => {
+        if (!uid) return;
         try {
-            const docRef = doc(db, 'resumes', 'main');
+            const docRef = doc(db, 'resumes', uid); // Use UID
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 const cloudData = docSnap.data();
@@ -104,13 +109,18 @@ export const ResumeProvider = ({ children }) => {
 
     const saveResumeToCloud = async () => {
         if (!user) return alert('Please login to save to cloud.');
+        if (isSaving) return; // Prevent double click
+
+        setIsSaving(true);
         try {
-            const docRef = doc(db, 'resumes', 'main');
-            await setDoc(docRef, data);
-            alert('Saved to cloud successfully!');
+            const docRef = doc(db, 'resumes', user.uid); // Use UID
+            await setDoc(docRef, { ...data, updatedAt: new Date() });
+            alert('Saved to cloud successfully! ✅');
         } catch (e) {
             console.error('Save failed:', e);
             alert('Cloud save failed: ' + e.message);
+        } finally {
+            setIsSaving(false);
         }
     };
 

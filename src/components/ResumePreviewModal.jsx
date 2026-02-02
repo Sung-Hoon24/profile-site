@@ -118,16 +118,10 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                     </div>
 
                     <div className="preview-actions">
-                        <div className="status-badges">
-                            {/* Stats */}
-                            <span className="badge info">Scale: {Math.round(scale * 100)}%</span>
-                            <span className={`badge ${status === 'OK' ? 'success' : status === 'ADJUSTED' ? 'warning' : 'danger'}`}>
-                                {status === 'OK' ? 'Fit' : status === 'ADJUSTED' ? `Auto-Shrink (${fontSize}px)` : 'OVERFLOW'}
-                            </span>
-                        </div>
+                        {/* Badges Removed by User Request */}
 
                         <button className="btn-close" onClick={onClose} disabled={isSaving}>
-                            Close
+                            Close (닫기)
                         </button>
                         <button className="btn-save" onClick={handleSavePdf} disabled={isSaving}>
                             {isSaving ? 'Saving...' : '💾 Save PDF'}
