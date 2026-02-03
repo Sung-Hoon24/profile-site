@@ -887,6 +887,8 @@ section {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  padding-top: 80px;
+  /* Space for Global Navigator */
 }
 
 .builder-right {
@@ -912,8 +914,9 @@ section {
 
 .editor-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  /* Stack Title and Buttons */
+  gap: 15px;
   margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid #333;
@@ -922,11 +925,15 @@ section {
 .editor-header h2 {
   color: white;
   margin: 0;
+  font-size: 1.8rem;
 }
 
 .editor-actions {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  /* Ensure buttons wrap */
+  width: 100%;
 }
 
 .icon-btn {

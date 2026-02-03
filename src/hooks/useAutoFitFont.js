@@ -37,7 +37,9 @@ export const useAutoFitFont = (contentRef, data, maxHeight = 1060, options = {})
             // clientHeight = includes padding if box-sizing border-box?? No, usually inner.
             // Let's use scrollHeight vs clientHeight.
 
-            const allowed = element.clientHeight;
+            // FIXED: Use maxHeight prop if available, otherwise element height
+            // We must respect the A4 limit (passed as maxHeight)
+            const allowed = maxHeight || element.clientHeight;
             const actual = element.scrollHeight;
 
             // Allow a tiny margin of error (1px)

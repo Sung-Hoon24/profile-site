@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useResume } from '../context/ResumeContext'; // Import Context
 import {
     auth,
     provider,
@@ -9,6 +10,7 @@ import {
 import '../styles/login-modal.css';
 
 const LoginModal = ({ isOpen, onClose }) => {
+    const { setCustomDocId } = useResume(); // S_FIX: Import Setter
     const [activeTab, setActiveTab] = useState('login'); // 'login' | 'signup'
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -25,6 +27,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
     // Reset on Open
     useEffect(() => {
+        console.log('[LoginModal] isOpen prop:', isOpen); // DEBUG
         if (isOpen) {
             setActiveTab('login');
             setIsSuccess(false);
@@ -64,8 +67,8 @@ const LoginModal = ({ isOpen, onClose }) => {
 
     // --- Validation Logic ---
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // PW: At least 8 chars, 1 letter, 1 number, 1 special char
-    const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    // PW: At least 8 chars, 1 letter, 1 number, 1 special char (Broadened support)
+    const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
     const isEmailValid = emailRegex.test(email);
     const isPwValid = pwRegex.test(password);
@@ -84,43 +87,54 @@ const LoginModal = ({ isOpen, onClose }) => {
             onClose(); // Auto close on Google success (it's auto signup too)
         } catch (err) {
             console.error(err);
-            setError('구글 로그인 실패: ' + err.message);
+            // S_FIX: User friendly error messages
+            if (err.code === 'auth/popup-closed-by-user') {
+                setError('로그인 창이 닫혔습니다. 다시 시도해주세요.');
+            } else if (err.code === 'auth/cancelled-popup-request') {
+                setError('요청이 중복되었습니다. 잠시 후 다시 시도해주세요.');
+            } else {
+                setError('구글 로그인 실패: ' + err.message);
+            }
         } finally {
             setLoading(false);
         }
     };
 
     const handleKakaoLogin = () => {
+        console.log('[Kakao] Button Clicked - Using authorize()');
+
         if (!window.Kakao) {
-            alert('오류: window.Kakao가 없습니다.');
+            alert('CRITICAL: window.Kakao 없음. 스크립트 로드 실패?');
             return;
         }
 
         if (!window.Kakao.isInitialized()) {
-            // alert('오류: Kakao SDK가 초기화되지 않았습니다. 재시도합니다.');
             const key = import.meta.env.VITE_KAKAO_KEY || 'b0d2b8461daab0efebf5e296a1ab9661';
             try {
                 window.Kakao.init(key);
+                console.log('[Kakao] SDK Initialized');
             } catch (e) {
-                alert('초기화 실패: ' + e.message);
+                alert('Kakao Init Failed: ' + e.message);
                 return;
             }
         }
 
-        // Redirect 방식 로그인
         try {
-            // 현재 페이지 도메인으로 리다이렉트
-            const redirectUri = window.location.origin;
+            // Use Kakao.Auth.authorize() for redirect-based OAuth (SDK v2.7+)
+            // Note: responseType parameter was removed - SDK uses code flow by default
             window.Kakao.Auth.authorize({
-                redirectUri: redirectUri
+                redirectUri: window.location.origin + '/kakao-callback',
             });
-        } catch (err) {
-            alert('로그인 요청 중 에러: ' + err.message);
+        } catch (e) {
+            alert('Kakao Auth Error: ' + e.message);
+            console.error('[Kakao] Auth Error:', e);
         }
     };
 
     const handleEmailSubmit = async (e) => {
         e.preventDefault();
+        console.log('[LoginModal] Submitting form. Tab:', activeTab); // DEBUG
+
         if (!canSubmit || loading) return;
 
         setLoading(true);
@@ -246,7 +260,10 @@ const LoginModal = ({ isOpen, onClose }) => {
                                 {/* Real-time Validation Feedback */}
                                 <div className="auth-validation-list">
                                     <div className={`auth-val-item ${isPwValid ? 'valid' : 'invalid'}`}>
-                                        {isPwValid ? '✔' : '•'} 8자 이상, 영문/숫자/특수문자 포함
+                                        {isPwValid ? '✔' : '•'} 8자 이상, 영문/숫자/특수문자 필수
+                                        <div className="auth-val-hint">
+                                            (사용 가능: ! @ # $ % ^ & * _ - + = 등)
+                                        </div>
                                     </div>
                                     <div className={`auth-val-item ${isMatch && confirmPw ? 'valid' : confirmPw ? 'invalid' : ''}`}>
                                         {isMatch && confirmPw ? '✔' : '•'} 비밀번호 일치
@@ -282,12 +299,14 @@ const LoginModal = ({ isOpen, onClose }) => {
                         </button>
 
                         <div className="auth-social-others">
+                            {/* TODO: 카카오 로그인은 Firebase Cloud Function 배포 후 활성화
                             <button
                                 type="button"
                                 className="auth-social-icon-btn kakao"
                                 onClick={handleKakaoLogin}
                                 title="카카오 로그인"
                             >K</button>
+                            */}
                             {/* Naver and Twitter removed as requested */}
                         </div>
                     </div>

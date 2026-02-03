@@ -1,0 +1,61 @@
+/* Global Navigator Styles */
+.global-navigator {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent backing */
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0;
+}
+
+.nav-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.home-btn {
+    background: linear-gradient(135deg, #0061ff, #60efff);
+}
+
+.back-btn {
+    background: #333;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #ff9a9e, #fecfef);
+}
+
+.logout-btn {
+    overflow: hidden;
+    padding: 0;
+}
+
+.nav-divider {
+    height: 30px;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}

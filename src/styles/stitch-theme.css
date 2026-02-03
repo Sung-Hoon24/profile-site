@@ -1,0 +1,138 @@
+/* 
+  🧬 Stitch Design System (Transplanted)
+  Source: Stitch/src/index.css & App.css
+  Isolation Level: High (Scoped Classes)
+*/
+
+:root {
+    /* Stitch Palette (Augmented) */
+    --stitch-primary: #00e5ff;
+    /* Cyan */
+    --stitch-secondary: #ff4081;
+    /* Pink */
+    --stitch-accent: #7c4dff;
+    /* Purple */
+    --stitch-bg: #0f0f19;
+    /* Deep Space */
+
+    /* Glass Utilities */
+    --stitch-glass-bg: rgba(255, 255, 255, 0.05);
+    --stitch-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* 1. Background Atmosphere */
+.stitch-bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--stitch-bg);
+    z-index: -10;
+    /* Far behind */
+    pointer-events: none;
+}
+
+.stitch-glow-effect {
+    position: fixed;
+    /* Fixed to stay on screen during scroll */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    /* Increased for desktop */
+    height: 800px;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, rgba(15, 15, 25, 0) 70%);
+    z-index: -9;
+    pointer-events: none;
+    animation: stitch-pulse-slow 10s infinite alternate;
+}
+
+@keyframes stitch-pulse-slow {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* 2. Scoped Components */
+
+/* Stitch Card (Glass Panel) */
+.stitch-card {
+    background: var(--stitch-glass-bg);
+    border: 1px solid var(--stitch-glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* Safari support */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stitch-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0, 229, 255, 0.15);
+    border-color: rgba(0, 229, 255, 0.3);
+}
+
+/* Stitch Title (Neon Text) */
+.stitch-title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 0.2rem;
+    background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.stitch-subtitle {
+    font-size: 1.2rem;
+    color: var(--stitch-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+/* Stitch Button (Neon Pill) */
+.stitch-btn {
+    padding: 0.8rem 2.5rem;
+    border-radius: 50px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.1) 100%);
+    border: 1px solid var(--stitch-primary);
+    color: var(--stitch-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.stitch-btn:hover {
+    background: var(--stitch-primary);
+    color: #000;
+    box-shadow: 0 0 20px var(--stitch-primary);
+    transform: scale(1.05);
+}
+
+.stitch-btn-secondary {
+    border-color: var(--stitch-secondary);
+    color: var(--stitch-secondary);
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 64, 129, 0.1) 100%);
+}
+
+.stitch-btn-secondary:hover {
+    background: var(--stitch-secondary);
+    color: white;
+    box-shadow: 0 0 20px var(--stitch-secondary);
+}

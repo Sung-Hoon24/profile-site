@@ -50,8 +50,9 @@
     position: relative;
     width: 210mm;
     min-height: 297mm;
-    height: auto !important;
-    overflow: visible !important;
+    /* Strict height check for overflow logic, but allow auto for now */
+    height: auto;
+    overflow: visible;
     box-sizing: border-box;
     background: white;
     font-family: 'Pretendard', sans-serif;
@@ -302,30 +303,38 @@
     @page {
         size: A4;
         margin: 0;
-        /* Reset browser margin, we handle padding */
     }
 
     body {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-        background: white;
+        background: white !important;
+        margin: 0;
+        padding: 0;
     }
 
-    /* Hide non-printable elements */
+    /* Hide UI Elements */
     .preview-panel,
     .preview-toolbar,
     .editor-panel,
-    .builder-layout {
+    .builder-layout,
+    .global-navigator,
+    .zoom-controls,
+    .mobile-toggle-bar {
+        /* Hide Toggle Bar */
         display: none !important;
     }
 
+    /* Reset Layout for Print */
     #root,
     .builder-right {
         width: 100%;
-        height: 100%;
+        height: auto;
         margin: 0;
         padding: 0;
         overflow: visible !important;
+        position: static;
+        transform: none !important;
     }
 
     /* Target the paper directly */
@@ -333,13 +342,137 @@
         width: 210mm;
         min-height: 297mm;
         height: auto;
-        overflow: visible !important;
         margin: 0 auto;
         border: none;
         box-shadow: none;
         position: absolute;
         top: 0;
         left: 0;
-        print-color-adjust: exact;
+        transform: none !important;
+    }
+
+    .resume-content-wrapper {
+        display: block;
+    }
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS (Max-Width 768px)
+========================================= */
+@media (max-width: 768px) {
+
+    /* 1. Layout Reset */
+    .builder-layout {
+        flex-direction: column;
+        display: block;
+        /* Stack (but we hide one via JS) */
+    }
+
+    .builder-left,
+    .builder-right {
+        width: 100%;
+        height: calc(100vh - 60px);
+        /* Leave space for bottom bar */
+        border: none;
+        padding-bottom: 80px;
+        /* Space for bottom bar padding */
+    }
+
+    .builder-left {
+        padding-top: 20px;
+        /* Global Nav is smaller on mobile */
+    }
+
+    .builder-right {
+        background: #333;
+        /* Darker bg for preview on mobile */
+        padding: 20px;
+    }
+
+    /* 2. Mobile HIDDEN Class (Controlled by MainBuilder) */
+    .mobile-hidden {
+        display: none !important;
+    }
+
+    /* 3. Global Navigator Adjustments */
+    .global-navigator {
+        padding: 5px 10px;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .editor-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .save-btn-primary,
+    .save-btn-secondary,
+    .save-btn-danger {
+        padding: 8px 12px;
+        font-size: 12px;
+        flex: 1;
+        /* Make buttons expand */
+    }
+
+    /* 4. Preview Auto-Scale (Fit to Screen) */
+    /* We handle this via transform in PreviewPanel or CSS here? 
+       CSS transform on A4 page is tricky without JS detecting width. 
+       For now, let overflow-x scroll. */
+    .a4-page {
+        transform-origin: top left;
+        transform: scale(0.45);
+        /* Temporary fix: Scale down fixed */
+        margin-bottom: -150mm;
+        /* Compensate layout gap */
+    }
+}
+
+/* Mobile Toggle Bar Button Styles */
+.mobile-toggle-bar {
+    display: none;
+    /* Hidden on Desktop */
+}
+
+@media (max-width: 768px) {
+    .mobile-toggle-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: #0f0f19;
+        border-top: 1px solid #333;
+        z-index: 10000;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .mobile-tab-btn {
+        flex: 1;
+        height: 100%;
+        background: transparent;
+        border: none;
+        color: #666;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .mobile-tab-btn.active {
+        color: #00e5ff;
+        /* Stitch Cyan */
+        background: rgba(0, 229, 255, 0.1);
+        border-top: 2px solid #00e5ff;
     }
 }

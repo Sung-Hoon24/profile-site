@@ -7,7 +7,8 @@ import {
     signOut,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    signInAnonymously // Added for Kakao "Guest" Login
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -36,6 +37,7 @@ export {
     onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    signInAnonymously,
     doc,
     getDoc,
     setDoc

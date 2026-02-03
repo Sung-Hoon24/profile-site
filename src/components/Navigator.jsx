@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useResume } from '../context/ResumeContext'; // Import Context
-import { signInWithPopup, auth, provider, signOut } from '../../firebase'; // Import Auth
+import { signInWithPopup, auth, provider, signOut, signInAnonymously } from '../../firebase'; // Import Auth
 import LoginModal from './LoginModal';
+import '../styles/GlobalNavigator.css'; // Import Styles
 
 const Navigator = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useResume(); // Get User State
     const [showLoginModal, setShowLoginModal] = useState(false); // Modal State
+
+    const handleLoginClick = () => {
+        setShowLoginModal(true);
+    };
 
     const handleBack = () => {
         if (location.pathname === '/') return;
@@ -18,21 +23,6 @@ const Navigator = () => {
     const handleHome = () => {
         navigate('/');
     };
-
-    // Handle Kakao Login Redirect
-    React.useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const code = params.get('code');
-        if (code) {
-            console.log('Kakao Auth Code found:', code);
-            // In a real app, send this code to backend to get token.
-            // For this client-side demo:
-            alert(`카카오 로그인 성공! (인증 코드: ${code.substring(0, 10)}...)`);
-
-            // Remove code from URL to prevent loop/re-alert
-            navigate(location.pathname, { replace: true });
-        }
-    }, [location]);
 
     // Old handleLogin removed, now using Modal
 
@@ -66,7 +56,7 @@ const Navigator = () => {
                         )}
                     </button>
                 ) : (
-                    <button onClick={() => setShowLoginModal(true)} className="nav-btn login-btn" title="로그인 / 회원가입">
+                    <button onClick={handleLoginClick} className="nav-btn login-btn" title="로그인 / 회원가입">
                         🔐
                     </button>
                 )}

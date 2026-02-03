@@ -2,47 +2,73 @@ import React, { forwardRef } from 'react';
 import '../styles/resume-form.css'; // Switch to Form CSS
 
 const ResumePaper = forwardRef(({ data }, ref) => {
+    // Overflow Detection
+    const [isOverflowing, setIsOverflowing] = React.useState(false);
+    const pageRef = React.useRef(null);
+    const contentRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const checkOverflow = () => {
+            if (pageRef.current) {
+                // A4 Height ~ 1122px (297mm at 96 DPI)
+                // We use scrollHeight to detect actual content size
+                const currentHeight = pageRef.current.scrollHeight;
+                // Standard A4 height threshold (slightly less than 1122 to be safe)
+                // UPDATE: Increased to 1130 to allow slight buffer/margin of error for "Exact 1 Page"
+                const MAX_HEIGHT = 1130;
+
+                setIsOverflowing(currentHeight > MAX_HEIGHT);
+            }
+        };
+
+        // Check on mount and data change
+        checkOverflow();
+
+        // Optional: Resize observer for more robustness
+        const observer = new ResizeObserver(checkOverflow);
+        if (pageRef.current) observer.observe(pageRef.current);
+
+        return () => observer.disconnect();
+    }, [data]);
+
     // Workflow Step 1-B & 3: Log props and Scan keys
     if (data) {
-        // User requested STRICT FINAL CHECK
-        console.log('[FINAL CHECK]', data);
-        console.log('[RESUME_PAPER PROPS]', data);
-        console.log("keys", Object.keys(data));
-        console.log("exp/edu/skills", data.experience?.length, data.education?.length, data.skills);
+        // ... (logging kept minimal or removed)
     }
 
     if (!data) return null;
 
     return (
-        <div className={`a4-page ${data?.__mode || 'preview'}`} ref={ref} id="resume-print-root">
-            {/* OPTIONAL SAFE DEBUG OVERLAY */}
-            {/* OPTIONAL SAFE DEBUG OVERLAY - DISABLED FOR PRODUCTION VISUALS */}
-            {false && data?.__mode !== 'pdf' && (
-                <pre
-                    data-debug
-                    style={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        zIndex: 9999,
-                        width: 320,
-                        maxHeight: 220,
-                        overflow: 'auto',
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        border: '1px solid red',
-                        padding: 10,
-                        fontSize: 10,
-                        whiteSpace: 'pre-wrap',
-                        pointerEvents: 'none' // Click-through
-                    }}
-                >
-                    {JSON.stringify(
-                        { exp: data.experience, edu: data.education, skills: data.skills },
-                        null,
-                        2
-                    )}
-                </pre>
+        <div className={`a4-page ${data?.__mode || 'preview'}`} ref={(node) => {
+            // Merge refs: generic ref + internal pageRef
+            pageRef.current = node;
+            if (typeof ref === 'function') ref(node);
+            else if (ref) ref.current = node;
+        }} id="resume-print-root">
+
+            {/* Overflow Warning Badge (Hidden in Print via CSS) */}
+            {isOverflowing && (
+                <div style={{
+                    position: 'absolute',
+                    top: -40,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#ff4444',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
+                    zIndex: 9999,
+                    whiteSpace: 'nowrap',
+                    animation: 'bounce 1s infinite'
+                }} className="overflow-warning">
+                    ⚠️ Content Exceeds 1 Page (Will be Cut Off)
+                </div>
             )}
+
+            {/* Remove Old Debug Overlay */}
 
 
             <div className="resume-content-wrapper">
@@ -108,7 +134,7 @@ const ResumePaper = forwardRef(({ data }, ref) => {
                             <div className="form-field-row" style={{ marginTop: '-4px' }}>
                                 <span className="field-bullet" style={{ visibility: 'hidden' }}>•</span>
                                 <span className="field-label">Role:</span>
-                                <div className="field-input">{item.title || item.role}</div>
+                                <div className="field-input">{item.role}</div>
                             </div>
                             <div className="exp-desc-box">
                                 {item.desc}
