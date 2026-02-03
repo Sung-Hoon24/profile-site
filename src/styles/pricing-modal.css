@@ -1,0 +1,220 @@
+/* 
+  💎 Pricing Modal Scoped Styles 
+  Namespace: #pricing-modal-root
+*/
+
+#pricing-modal-root {
+    /* Variables Scope */
+    --pm-gold: #FFD700;
+    --pm-gold-glow: rgba(255, 215, 0, 0.3);
+    --pm-bg-glass: rgba(20, 20, 30, 0.85);
+}
+
+/* Background Overlay */
+#pricing-modal-root .pm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: pm-fade-in 0.3s ease-out;
+}
+
+/* Modal Window */
+#pricing-modal-root .pm-modal {
+    width: 900px;
+    max-width: 95vw;
+    background: var(--pm-bg-glass);
+    border: 1px solid var(--stitch-glass-border);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px var(--pm-gold-glow);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Left: Visual Preview */
+#pricing-modal-root .pm-visual {
+    flex: 1;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Decorative Pattern */
+#pricing-modal-root .pm-visual::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(45deg,
+            rgba(255, 215, 0, 0.03) 0px,
+            rgba(255, 215, 0, 0.03) 1px,
+            transparent 1px,
+            transparent 20px);
+    animation: pm-rotate-bg 60s linear infinite;
+}
+
+/* Right: Content */
+#pricing-modal-root .pm-content {
+    flex: 1.2;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+#pricing-modal-root .pm-badge {
+    display: inline-block;
+    background: rgba(255, 215, 0, 0.15);
+    color: var(--pm-gold);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+#pricing-modal-root .pm-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, #fff, var(--pm-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#pricing-modal-root .pm-desc {
+    color: #a0a0b0;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+/* Features List */
+#pricing-modal-root .pm-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+}
+
+#pricing-modal-root .pm-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #e0e0e0;
+}
+
+#pricing-modal-root .pm-check {
+    color: var(--pm-gold);
+    font-size: 1.2rem;
+}
+
+/* Price & CTA */
+#pricing-modal-root .pm-footer {
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#pricing-modal-root .pm-price-box {
+    display: flex;
+    flex-direction: column;
+}
+
+#pricing-modal-root .pm-price-label {
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+#pricing-modal-root .pm-price-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+#pricing-modal-root .pm-cta-btn {
+    background: var(--pm-gold);
+    /* Gold Button */
+    color: #000;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+#pricing-modal-root .pm-cta-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6);
+}
+
+#pricing-modal-root .pm-cta-btn:disabled {
+    background: #444;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Close Button */
+#pricing-modal-root .pm-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s;
+}
+
+#pricing-modal-root .pm-close:hover {
+    color: #fff;
+}
+
+/* Animations */
+@keyframes pm-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pm-rotate-bg {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -238,8 +238,8 @@
     height: auto;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    /* CHANGED from center to flex-start for long vertical content */
+    align-items: center;
+    /* Centered for better aesthetics, unless content specifically needs top-start */
     transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1);
     will-change: transform;
     box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);

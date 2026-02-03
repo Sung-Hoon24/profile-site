@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useResume } from '../context/ResumeContext';
 import { exportToJson, validateAndParseJson } from '../utils/fileHelpers';
 import SyncStatus from './SyncStatus';
+import { TEMPLATES } from '../constants/templates';
+import PricingModal from './PricingModal';
 
 // Simple Accordion Component
 const Accordion = ({ title, children, defaultOpen = false }) => {
@@ -105,12 +107,39 @@ const EditorPanel = () => {
         }
     };
 
+    // Template Handler (Premium Feature)
+    const [isPremium, setIsPremium] = useState(false); // Locking State
+    const [showPricing, setShowPricing] = useState(false); // Modal State
+
+    const handleLoadTemplate = () => {
+        if (!isPremium) {
+            // Open Premium Modal instead of Alert
+            setShowPricing(true);
+        } else {
+            loadTemplateAction();
+        }
+    };
+
+    const handlePurchaseSuccess = () => {
+        setIsPremium(true);
+        // Auto-load after purchase
+        // Short delay for visual effect? No, immediate is better UX.
+        loadTemplateAction();
+    };
+
+    const loadTemplateAction = () => {
+        if (window.confirm("Load 'Developer' Example Template? Current data will be replaced.")) {
+            if (TEMPLATES.developer) {
+                importData(TEMPLATES.developer);
+            }
+        }
+    };
+
     return (
         <div className="editor-panel">
             <div className="editor-header">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <h2>Editor</h2>
-                    {/* Phase 3: Sync Status Indicator (Now Interactive) */}
                     <SyncStatus status={saveStatus} lastSaved={lastSaved} onManualSave={saveResume} />
                 </div>
 
@@ -124,6 +153,17 @@ const EditorPanel = () => {
                 />
 
                 <div className="editor-actions" style={{ gap: '8px', flexWrap: 'wrap' }}>
+                    <button
+                        onClick={handleLoadTemplate}
+                        className="save-btn-secondary"
+                        style={{
+                            border: '1px solid #ffd700',
+                            color: isPremium ? '#ffd700' : '#aaa',
+                            background: isPremium ? 'rgba(255, 215, 0, 0.1)' : 'transparent'
+                        }}
+                    >
+                        {isPremium ? '🔓 Load Template' : '🔒 Premium Templates'}
+                    </button>
                     <button onClick={handleExport} className="save-btn-secondary" title="Download backup">
                         💾 Backup
                     </button>
@@ -203,6 +243,13 @@ const EditorPanel = () => {
                     </div>
                 </Accordion>
             </div>
+
+            {/* Premium Pricing Modal */}
+            <PricingModal
+                isOpen={showPricing}
+                onClose={() => setShowPricing(false)}
+                onUnlockSuccess={handlePurchaseSuccess}
+            />
         </div>
     );
 };

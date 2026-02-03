@@ -40,22 +40,24 @@ export const exportToPdf = async (element, filename = 'resume.pdf', options = {}
         const worker = html2pdf().set(opt).from(element);
 
         // 5. Custom Save Logic to fix blank pages
-        await worker.toPdf().get('pdf').then((pdf) => {
-            const totalPages = pdf.internal.getNumberOfPages();
+        const pdf = await worker.toPdf().get('pdf');
+        const totalPages = pdf.internal.getNumberOfPages();
 
-            // Heuristic: If we have > 1 page, and the content was supposed to fit in 1,
-            // check if we should delete the last page.
-            // However, html2pdf hard to check content empty.
-            // We'll rely on our CSS to Ensure single page fit first.
-            // If the user *requested* 1-page fit, we assume 1 page.
+        // Heuristic: If forceOnePage is true and we somehow got > 1 page,
+        // it means either genuine overflow or the phantom empty page bug.
+        // We will attempt to delete the extra pages if strictly forced, 
+        // OR just delete the last page if it's very likely empty (advanced detection is hard without canvas access here).
+        // For V1 Safety: We will only delete pages if 'forceOnePage' is explicitly True.
 
-            if (totalPages > 1 && options.forceOnePage) {
-                // Delete all pages after the first one
-                for (let i = totalPages; i > 1; i--) {
-                    pdf.deletePage(i);
-                }
+        if (totalPages > 1 && options.forceOnePage) {
+            console.warn(`[PDF Export] Generated ${totalPages} pages but Force 1-Page is ON. Removing extra pages.`);
+            // Remove from the end backwards
+            for (let i = totalPages; i > 1; i--) {
+                pdf.deletePage(i);
             }
-        }).save();
+        }
+
+        pdf.save(filename);
 
     } catch (error) {
         console.error("PDF Export Failed:", error);

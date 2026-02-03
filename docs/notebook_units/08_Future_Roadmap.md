@@ -1,22 +1,15 @@
-# Notebook Unit 08: Future Roadmap
+# 🔭 제8부대: 퓨처 스트래티지스트 (Future Strategists)
+**임무**: 장기 로드맵 수립, 신기술 도입 검토(AI 등), 시장 트렌드 분석, 확장성 대비
 
-## 1. PDF Export Engine V2
-- **Current**: Basic browser print / `html2pdf.js` (Canvas based).
-- **Goal**: Vector-based PDF generation using `react-pdf` or backend generation (Puppeteer).
-- **Why**: Canvas based is blurry; Vector is crisp and selectable.
+## 📡 NotebookLM 입력용 프롬프트 (복사해서 사용)
+```text
+당신은 IT 프로덕트 매니저(PM)이자 비전가입니다.
+현재의 "이력서 웹사이트"를 넘어, 1년 뒤 이 서비스가 "개발자 포트폴리오 허브"로 발전하기 위해 지금 미리 준비해야 할 기능적/기술적 기반은 무엇일까요?
+(예: AI 이력서 분석, 다국어 지원, 블로그 연동 등)
+```
 
-## 2. AI Resume Analysis
-- **Goal**: Integrate Gemini/GPT API to analyze resume content.
-- **Features**:
-    - "Roast My Resume" (Critique).
-    - Auto-summarize "About Me".
-    - Skill keyword suggestion based on Job Title.
+## 💾 [수신된 정보] NotebookLM 최신 팁 붙여넣기
+(아래에 NotebookLM의 답변을 주기적으로 업데이트해 주세요.)
 
-## 3. Multiple Templates
-- **Current**: Single "Modern/Standard" layout.
-- **Goal**: Switchable CSS themes (ResumeContext `theme` property).
-    - *Themes*: Minimalist, Ivy League, Tech, Creative.
-
-## 4. Backend migration (Optional)
-- If logic becomes too complex for client-side, migrate to **Firebase Cloud Functions** or **Supabase**.
-- Would solve the "Anonymous Auth" bridge hack by handling Kakao tokens server-side.
+- 
+- 
