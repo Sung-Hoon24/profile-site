@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
-import '../style.css' // Import Global Styles
+import './index.css' // Import Global Styles
 import './styles/stitch-theme.css' // Import Design System
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -12,4 +12,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </BrowserRouter>
     </React.StrictMode>,
 )
-    ;

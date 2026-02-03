@@ -11,12 +11,13 @@ import {
     signInAnonymously // Added for Kakao "Guest" Login
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { getFunctions } from "firebase/functions";
+// import { getFunctions } from "firebase/functions";
+
 
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
-    apiKey: "AIzaSyDW-YtMEqry5jF6JBfBk-3o_ZKohz9OJfI",
+    apiKey: "AIzaSyDW-YtMEqry5jF6JBk-3o_ZKohz9OJfI",
     authDomain: "my-awesome-site-f3f94.firebaseapp.com",
     projectId: "my-awesome-site-f3f94",
     storageBucket: "my-awesome-site-f3f94.firebasestorage.app",
@@ -30,7 +31,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize Services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const functions = getFunctions(app); // Added for Cloud Functions
+// export const functions = getFunctions(app); // Added for Cloud Functions
 export const provider = new GoogleAuthProvider();
 
 export {
