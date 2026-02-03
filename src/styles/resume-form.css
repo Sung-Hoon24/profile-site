@@ -111,10 +111,12 @@
 /* pdf 모드: 1페이지 고정 */
 /* pdf 모드: 1페이지 고정 -> 자동 확장으로 변경 (잘림 방지) */
 .a4-page.pdf {
-    height: auto !important;
-    min-height: 297mm;
-    overflow: visible !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
     padding: 15mm 18mm;
+    margin: 0 !important;
 }
 
 .resume-content-wrapper {
@@ -125,7 +127,7 @@
     gap: 0;
     height: auto;
     /* Let content determine height, don't force stretch */
-    min-height: 100%;
+    min-height: 0;
 }
 
 /* Header Config */
