@@ -8,9 +8,8 @@ import '../styles/pricing-modal.css';
 const PricingModal = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
 
-    // ⚠️ TODO: Lemon Squeezy 상품 Checkout URL을 여기에 입력하세요
-    // 예: https://your-store.lemonsqueezy.com/checkout/buy/variant_...
-    const CHECKOUT_URL = "YOUR_LEMON_SQUEEZY_CHECKOUT_URL";
+    // Lemon Squeezy 상품 Checkout URL
+    const CHECKOUT_URL = "https://heejung240000.lemonsqueezy.com/checkout/buy/4bbcc3ca-bd77-4bb5-9d94-be1370c56cdb";
 
     if (!isOpen) return null;
 

@@ -17,7 +17,7 @@ import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
-    apiKey: "AIzaSyDW-YtMEqry5jF6JBk-3o_ZKohz9OJfI",
+    apiKey: "AIzaSyDW-YtMEqry5jF6JBfBk-3o_ZKohz9OJfI",
     authDomain: "my-awesome-site-f3f94.firebaseapp.com",
     projectId: "my-awesome-site-f3f94",
     storageBucket: "my-awesome-site-f3f94.firebasestorage.app",

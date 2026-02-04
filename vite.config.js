@@ -9,6 +9,7 @@ export default defineConfig({
         strictPort: true,
     },
     build: {
+        outDir: 'dist_prod',
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),
