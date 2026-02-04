@@ -1,104 +1,90 @@
-
 import React, { useState } from 'react';
-// import { httpsCallable } from 'firebase/functions'; // DISABLED
-import { auth } from '../../firebase'; // Removed functions import
+import { auth } from '../../firebase';
 import '../styles/pricing-modal.css';
 
 /**
- * 💎 Pricing Modal (Zero-Error Commerce)
+ * 💎 Pricing Modal (Lemon Squeezy Integration)
  */
-const PricingModal = ({ isOpen, onClose, onUnlockSuccess }) => {
+const PricingModal = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
-    const [statusMsg, setStatusMsg] = useState('');
+
+    // ⚠️ TODO: Lemon Squeezy 상품 Checkout URL을 여기에 입력하세요
+    // 예: https://your-store.lemonsqueezy.com/checkout/buy/variant_...
+    const CHECKOUT_URL = "YOUR_LEMON_SQUEEZY_CHECKOUT_URL";
 
     if (!isOpen) return null;
 
-    const handlePurchase = async () => {
+    const handlePurchase = () => {
         if (!auth.currentUser) {
-            alert("로그인이 필요합니다.");
+            alert("구매하시려면 먼저 로그인이 필요합니다.");
             return;
         }
 
-        const user = auth.currentUser;
-        setLoading(true);
-        setStatusMsg('결제 창을 불러오는 중...');
+        const userId = auth.currentUser.uid;
+        const userEmail = auth.currentUser.email;
 
-        const merchant_uid = `mid_${new Date().getTime()}_${Math.random().toString(36).substring(2, 7)}`;
+        // Custom Data로 userId 전달 (웹훅 처리를 위해 필수)
+        // 이메일은 프리필(prefill)
+        let finalUrl = CHECKOUT_URL;
+        if (finalUrl.includes('?')) {
+            finalUrl += `&checkout[custom][user_id]=${userId}&checkout[email]=${userEmail}`;
+        } else {
+            finalUrl += `?checkout[custom][user_id]=${userId}&checkout[email]=${userEmail}`;
+        }
+
+        console.log("Opening Lemon Squeezy Checkout:", finalUrl);
 
         try {
-            // MOCK FLOW for Development (Safe for Deployment until Store ID is set)
-            const confirmed = window.confirm("💎 [SANDBOX] 결제 모듈 연동 테스트\n\n실제 결제가 발생하지 않습니다.\n'확인'을 누르면 결제 성공으로 처리하고 서버 검증을 시도합니다.");
-
-            if (confirmed) {
-                setStatusMsg('서버 검증 진행 중...');
-
-                // MOCK SERVER CALL (Bypass firebase/functions build issue)
-                // const verifyPayment = httpsCallable(functions, 'verifyPayment');
-
-                try {
-                    // Simulate API Delay
-                    await new Promise(r => setTimeout(r, 1500));
-
-                    const res = { data: { success: true, message: "Simulation Success" } }; // MOCK RESPONSE
-
-
-                    if (res.data.success) {
-                        onUnlockSuccess();
-                        onClose();
-                    } else {
-                        // In Real Life, we show error.
-                        // In Demo without Store ID, this will ALWAYS happen.
-                        alert('결제 검증 실패 (Sandbox): ' + res.data.message);
-                    }
-                } catch (verifyErr) {
-                    console.error("Verification Error", verifyErr);
-                    // For DEMO PURPOSE ONLY: If it's the "Payment not found" error, we might optionally unlock?
-                    // No, stick to security.
-                    alert(`서버 검증 오류: ${verifyErr.message}`);
-                }
+            setLoading(true);
+            if (window.LemonSqueezy) {
+                window.LemonSqueezy.Url.Open(finalUrl);
+                // 모달 닫기보다 Overlay가 뜨므로 대기
+                setLoading(false);
             } else {
+                // Fallback (새 탭 열기)
+                window.open(finalUrl, '_blank');
                 setLoading(false);
             }
         } catch (error) {
-            console.error('Payment Error:', error);
-            alert(`결제 실패: ${error.message}`);
+            console.error("Payment Error:", error);
+            alert("결제 창을 여는 중 문제가 발생했습니다.");
             setLoading(false);
         }
     };
 
     return (
-        <div id="pricing-modal-root">
-            <div className="pm-overlay" onClick={!loading ? onClose : undefined}>
-                <div className="pm-modal" onClick={e => e.stopPropagation()}>
-                    <button className="pm-close" onClick={onClose} disabled={loading}>×</button>
+        <div className="pm-overlay" onClick={onClose}>
+            <div className="pm-container" onClick={(e) => e.stopPropagation()}>
+                <button className="pm-close-btn" onClick={onClose}>×</button>
 
-                    <div className="pm-visual">
-                        <div style={{ textAlign: 'center', zIndex: 1, animation: 'float 3s ease-in-out infinite' }}>
-                            <div style={{ fontSize: '5rem' }}>✨</div>
-                            <div style={{ color: '#FFD700', fontWeight: 'bold' }}>PREMIUM</div>
-                        </div>
+                <div className="pm-content">
+                    <div className="pm-header">
+                        <h2>Developer Pro</h2>
+                        <p className="pm-subtitle">Unlock Your Full Potential</p>
                     </div>
 
-                    <div className="pm-content">
-                        <span className="pm-badge">SPECIAL OFFER</span>
-                        <h2 className="pm-title">Unlock Developer Pro</h2>
-                        <p className="pm-desc">
-                            현직 시니어 개발자가 감수한 <strong>최적의 이력서 템플릿</strong>.<br />
-                            ATS(채용 시스템) 통과율을 높이는 구조와 디자인.
-                        </p>
-
-                        <div className="pm-features">
+                    <div className="pm-body">
+                        <div className="pm-features-list">
                             <div className="pm-feature-item">
-                                <span className="pm-check">✔</span>
-                                <span>ATS Friendly (텍스트 추출 최적화)</span>
+                                <span className="pm-icon">🔓</span>
+                                <div className="pm-feature-text">
+                                    <strong>모든 프리미엄 템플릿 해제</strong>
+                                    <p>전문가급 디자인 템플릿 5종 무제한 사용</p>
+                                </div>
                             </div>
                             <div className="pm-feature-item">
-                                <span className="pm-check">✔</span>
-                                <span>모던 테크 디자인 (다크 모드 지원)</span>
+                                <span className="pm-icon">📄</span>
+                                <div className="pm-feature-text">
+                                    <strong>PDF 다운로드 & 워터마크 제거</strong>
+                                    <p>깔끔한 고화질 PDF 내보내기</p>
+                                </div>
                             </div>
                             <div className="pm-feature-item">
-                                <span className="pm-check">✔</span>
-                                <span>평생 소장 및 무제한 수정</span>
+                                <span className="pm-icon">🚀</span>
+                                <div className="pm-feature-text">
+                                    <strong>우선 기술 지원</strong>
+                                    <p>문제 발생 시 우선적으로 지원해드립니다.</p>
+                                </div>
                             </div>
                         </div>
 
@@ -112,35 +98,12 @@ const PricingModal = ({ isOpen, onClose, onUnlockSuccess }) => {
                                 onClick={handlePurchase}
                                 disabled={loading}
                             >
-                                {loading ? 'Processing...' : '이 모든 혜택 잠금 해제 🔓'}
+                                {loading ? '로딩 중...' : '지금 업그레이드하기 ⚡'}
                             </button>
                         </div>
                     </div>
-
-                    {loading && (
-                        <div className="pm-loading-overlay">
-                            <div className="spinner"></div>
-                            <div style={{ color: '#fff', marginTop: '10px' }}>{statusMsg}</div>
-                        </div>
-                    )}
                 </div>
             </div>
-            <style>{`
-            .pm-loading-overlay {
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.85);
-                display: flex; flex-direction: column;
-                justify-content: center; align-items: center; z-index: 20;
-            }
-            .spinner {
-                width: 40px; height: 40px;
-                border: 4px solid #333; border-top: 4px solid #FFD700;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-            }
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-            @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-            `}</style>
         </div>
     );
 };

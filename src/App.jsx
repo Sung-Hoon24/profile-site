@@ -4,6 +4,8 @@ import { ResumeProvider } from './context/ResumeContext';
 import MainBuilder from './pages/MainBuilder';
 import LandingPage from './pages/LandingPage';
 import KakaoCallback from './pages/KakaoCallback';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 import Navigator from './components/Navigator';
 
@@ -21,7 +23,11 @@ function App() {
                 {/* 3. Kakao OAuth Callback */}
                 <Route path="/kakao-callback" element={<KakaoCallback />} />
 
-                {/* 4. Redirects for legacy routes */}
+                {/* 4. Legal Pages */}
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+
+                {/* 5. Redirects for legacy routes */}
                 <Route path="/edit" element={<MainBuilder />} />
                 <Route path="/preview" element={<MainBuilder />} />
             </Routes>
@@ -30,3 +36,4 @@ function App() {
 }
 
 export default App;
+
