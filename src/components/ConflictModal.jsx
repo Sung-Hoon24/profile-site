@@ -1,12 +1,32 @@
 import React from 'react';
 import '../styles/login-modal.css';
 
-const ConflictModal = ({ isOpen, onKeepLocal, onLoadCloud, cloudDate, localDate }) => {
+const ConflictModal = ({ isOpen, onKeepLocal, onLoadCloud, onClose, cloudDate, localDate }) => {
     if (!isOpen) return null;
 
     return (
         <div className="auth-overlay">
-            <div className="auth-modal conflict-modal">
+            <div className="auth-modal conflict-modal" style={{ position: 'relative' }}>
+                <button
+                    onClick={onClose}
+                    className="modal-close-btn"
+                    style={{
+                        position: 'absolute',
+                        top: '15px',
+                        right: '15px',
+                        background: 'none',
+                        border: 'none',
+                        color: '#888',
+                        fontSize: '1.5rem',
+                        cursor: 'pointer',
+                        padding: '5px',
+                        lineHeight: '1',
+                        zIndex: 10
+                    }}
+                    title="닫기"
+                >
+                    &times;
+                </button>
                 <div className="auth-header">
                     <h2 className="stitch-title-small" style={{ color: '#ff4081', margin: 0, fontSize: '1.4rem' }}>
                         ⚠️ Data Conflict

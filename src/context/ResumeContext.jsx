@@ -26,6 +26,7 @@ export const ResumeProvider = ({ children }) => {
         return {
             ...INITIAL_RESUME_STATE,
             ...parsed,
+            templateId: parsed.templateId || INITIAL_RESUME_STATE.templateId, // Explicitly preserve templateId
             basicInfo: { ...INITIAL_RESUME_STATE.basicInfo, ...(parsed.basicInfo || {}) },
             experience: Array.isArray(parsed.experience)
                 ? parsed.experience.map(item => ({
@@ -68,11 +69,11 @@ export const ResumeProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
-            
+
             // Determine the ID to load: Custom (if set manually before log in? Rare) or User UID
             // Important: If we use Kakao, we might set customDocId AFTER this triggers. 
             // So we handle the "Load" trigger separately or react to customDocId changes.
-            
+
             if (currentUser && !customDocId) {
                 // Standard Login (Google/Email) -> Use UID
                 // Logic remains similar but we wait for potential customID if it's an anonymous user?
@@ -182,6 +183,11 @@ export const ResumeProvider = ({ children }) => {
         }
     };
 
+    const dismissConflict = () => {
+        setShowConflict(false);
+        setCloudDataBuffer(null);
+    };
+
     const resetData = () => {
         if (window.confirm('Are you sure you want to reset all data? (This cannot be undone)')) {
             setData(INITIAL_RESUME_STATE);
@@ -194,6 +200,7 @@ export const ResumeProvider = ({ children }) => {
         setData({
             ...INITIAL_RESUME_STATE,
             ...newData,
+            templateId: newData.templateId || INITIAL_RESUME_STATE.templateId, // Preserve templateId
             basicInfo: { ...INITIAL_RESUME_STATE.basicInfo, ...(newData.basicInfo || {}) },
             experience: Array.isArray(newData.experience) ? newData.experience : [],
             education: Array.isArray(newData.education) ? newData.education : [],
@@ -221,6 +228,7 @@ export const ResumeProvider = ({ children }) => {
                 isOpen={showConflict}
                 onKeepLocal={() => resolveConflict('keepLocal')}
                 onLoadCloud={() => resolveConflict('loadCloud')}
+                onClose={dismissConflict}
                 cloudDate={cloudDate}
                 localDate={Date.now()} // Approx
             />

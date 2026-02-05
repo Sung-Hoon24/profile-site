@@ -1,5 +1,6 @@
 // Define the strict schema for the resume data
 export const INITIAL_RESUME_STATE = {
+    templateId: 'developer', // Template ID for switching designs
     basicInfo: {
         fullName: '',
         role: '',

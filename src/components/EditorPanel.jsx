@@ -170,11 +170,19 @@ const EditorPanel = () => {
         }
     };
 
+    // 🛠️ DEV MODE CHECK (Only show when ?dev=true is in URL)
+    const searchParams = new URLSearchParams(window.location.search);
+    const isDevMode = searchParams.get('dev') === 'true';
+
+    const handleTemplateSwitch = (templateId) => {
+        setData(prev => ({ ...prev, templateId }));
+    };
+
     return (
         <div className="editor-panel">
             <div className="editor-header">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                    <h2>Editor</h2>
+                    <h2>Editor {isDevMode && <span style={{ color: '#ff4081', fontSize: '0.8rem' }}>(DEV)</span>}</h2>
                     <SyncStatus status={saveStatus} lastSaved={lastSaved} onManualSave={saveResume} />
                 </div>
 
@@ -265,6 +273,22 @@ const EditorPanel = () => {
             </div>
 
             <div className="editor-scroll-area">
+                {isDevMode && (
+                    <Accordion title="0. Template Selector (Dev Only)" defaultOpen={true}>
+                        <div className="template-selector-grid">
+                            {['developer', 'designer', 'future', 'executive', 'startup'].map(id => (
+                                <button
+                                    key={id}
+                                    onClick={() => handleTemplateSwitch(id)}
+                                    className={`template-option-btn ${data.templateId === id ? 'active' : ''}`}
+                                >
+                                    {id.charAt(0).toUpperCase() + id.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+                    </Accordion>
+                )}
+
                 <Accordion title="1. Basic Info" defaultOpen={true}>
                     <div className="form-group-dark" style={{ textAlign: 'center', marginBottom: '20px' }}>
                         <div style={{
