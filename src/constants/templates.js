@@ -61,5 +61,23 @@ export const TEMPLATES = {
         ],
         skills: "Figma, Adobe XD, Photoshop, Principle, HTML/CSS",
         templateId: "designer"
+    },
+    future: {
+        templateId: 'future',
+        basicInfo: {
+            fullName: "Alex 'Neo' Chen",
+            email: "neo@cyber.net",
+            phone: "010-0000-1010",
+            summary: "Constructing secure and scalable digital fortresses. Specializing in offensive security and AI-driven defense mechanisms.",
+            role: "Cyber Security Architect"
+        },
+        education: [
+            { school: "MIT", major: "Computer Science & AI", year: "2018 - 2022" }
+        ],
+        experience: [
+            { company: "Global Defense Corp", role: "Lead Pen-Tester", period: "2023 - Present", desc: "Identified and patched 50+ critical vulnerabilities in core infrastructure." },
+            { company: "Startup AI", role: "Security Engineer", period: "2022 - 2023", desc: "Implemented zero-trust architecture for cloud services." }
+        ],
+        skills: "Python, Rust, Penetration Testing, Cryptography, AI Security"
     }
 };

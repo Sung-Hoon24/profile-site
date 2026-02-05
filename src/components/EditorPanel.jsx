@@ -173,6 +173,15 @@ const EditorPanel = () => {
                             >
                                 Load Designer
                             </button>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("Load Future Template?")) importData(TEMPLATES.future);
+                                }}
+                                className="save-btn-secondary"
+                                style={{ border: '1px solid #00e5ff', color: '#00e5ff', background: 'rgba(0, 229, 255, 0.1)' }}
+                            >
+                                Load Future
+                            </button>
                         </>
                     ) : (
                         <button
