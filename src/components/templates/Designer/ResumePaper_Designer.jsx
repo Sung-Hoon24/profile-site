@@ -180,9 +180,21 @@ const ResumePaper_Designer = forwardRef(({ data }, ref) => {
                 <aside style={styles.sidebar}>
                     {/* Profile */}
                     <div style={styles.nameTitle}>
-                        <div style={styles.avatarPlaceholder}>
-                            {data.basicInfo?.fullName?.charAt(0) || 'D'}
-                        </div>
+                        {data.basicInfo?.profileImage ? (
+                            <img
+                                src={data.basicInfo.profileImage}
+                                alt="Profile"
+                                style={{
+                                    ...styles.avatarPlaceholder,
+                                    background: 'none',
+                                    objectFit: 'cover'
+                                }}
+                            />
+                        ) : (
+                            <div style={styles.avatarPlaceholder}>
+                                {data.basicInfo?.fullName?.charAt(0) || 'D'}
+                            </div>
+                        )}
                         <h1 style={styles.h1}>{data.basicInfo?.fullName}</h1>
                         <div style={styles.role}>{data.basicInfo?.role || 'Designer'}</div>
                     </div>

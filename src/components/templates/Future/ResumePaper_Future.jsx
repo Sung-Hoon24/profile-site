@@ -159,9 +159,23 @@ const ResumePaper_Future = forwardRef(({ data }, ref) => {
             <div style={styles.page}>
                 {/* Header */}
                 <header style={styles.header}>
-                    <div>
-                        <h1 style={styles.name}>{data.basicInfo?.fullName}</h1>
-                        <div style={styles.role}>{data.basicInfo?.role || 'CYBER SECURITY ANALYST'}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                        {data.basicInfo?.profileImage && (
+                            <img
+                                src={data.basicInfo.profileImage}
+                                alt="Profile"
+                                style={{
+                                    width: '80px', height: '80px',
+                                    objectFit: 'cover',
+                                    clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)', // Hexagon
+                                    border: `2px solid ${ACCENT_COLOR}`
+                                }}
+                            />
+                        )}
+                        <div>
+                            <h1 style={styles.name}>{data.basicInfo?.fullName}</h1>
+                            <div style={styles.role}>{data.basicInfo?.role || 'CYBER SECURITY ANALYST'}</div>
+                        </div>
                     </div>
                     <div style={styles.contact}>
                         <div>{data.basicInfo?.email}</div>

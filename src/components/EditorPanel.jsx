@@ -107,6 +107,41 @@ const EditorPanel = () => {
         }
     };
 
+    // 📸 Image Upload Handler (Base64)
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 500 * 1024) { // 500KB Limit
+            alert("Image is too large! Please use an image under 500KB.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setData(prev => ({
+                ...prev,
+                basicInfo: {
+                    ...prev.basicInfo,
+                    profileImage: reader.result // Store Base64 string
+                }
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const removeImage = () => {
+        if (window.confirm("Remove profile photo?")) {
+            setData(prev => ({
+                ...prev,
+                basicInfo: {
+                    ...prev.basicInfo,
+                    profileImage: null
+                }
+            }));
+        }
+    };
+
     // Template Handler (Premium Feature)
     const [isPremium, setIsPremium] = useState(false); // Locking State
     const [showPricing, setShowPricing] = useState(false); // Modal State
@@ -213,6 +248,28 @@ const EditorPanel = () => {
 
             <div className="editor-scroll-area">
                 <Accordion title="1. Basic Info" defaultOpen={true}>
+                    <div className="form-group-dark" style={{ textAlign: 'center', marginBottom: '20px' }}>
+                        <div style={{
+                            width: '80px', height: '80px', borderRadius: '50%',
+                            background: data.basicInfo?.profileImage ? `url(${data.basicInfo.profileImage}) center/cover` : '#333',
+                            margin: '0 auto 10px auto', border: '2px solid #555'
+                        }}></div>
+                        <label className="save-btn-secondary" style={{ cursor: 'pointer', display: 'inline-block', fontSize: '12px' }}>
+                            📸 Upload Photo
+                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                        </label>
+                        {data.basicInfo?.profileImage && (
+                            <button onClick={removeImage} style={{
+                                background: 'transparent', border: 'none', color: '#ff4444',
+                                marginLeft: '10px', cursor: 'pointer', fontSize: '12px'
+                            }}>
+                                Remove
+                            </button>
+                        )}
+                        <div style={{ fontSize: '10px', color: '#777', marginTop: '5px' }}>
+                            (Max 500KB. Stored locally in JSON.)
+                        </div>
+                    </div>
                     <div className="form-group-dark">
                         <label>Full Name</label>
                         <input name="fullName" value={data.basicInfo?.fullName || ''} onChange={handleChange} placeholder="Hong Gil Dong" />
