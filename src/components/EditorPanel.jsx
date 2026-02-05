@@ -217,6 +217,24 @@ const EditorPanel = () => {
                             >
                                 Load Future
                             </button>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("Load Executive Template?")) importData(TEMPLATES.executive);
+                                }}
+                                className="save-btn-secondary"
+                                style={{ border: '1px solid #c5a059', color: '#c5a059', background: 'rgba(197, 160, 89, 0.1)' }}
+                            >
+                                Load Executive
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("Load Startup Template?")) importData(TEMPLATES.startup);
+                                }}
+                                className="save-btn-secondary"
+                                style={{ border: '1px solid #ff3b30', color: '#ff3b30', background: 'rgba(255, 59, 48, 0.1)' }}
+                            >
+                                Load Startup
+                            </button>
                         </>
                     ) : (
                         <button
