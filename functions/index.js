@@ -221,3 +221,75 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+/**
+ * 🍋 Lemon Squeezy Webhook Handler
+ * 
+ * Handles 'order_created' events to unlock premium features.
+ * Validates X-Signature to ensure request is legit.
+ */
+exports.lemonSqueezyWebhook = functions.https.onRequest(async (req, res) => {
+    const crypto = require('crypto');
+    const secret = functions.config().lemonsqueezy?.secret || process.env.LEMON_SQUEEZY_SECRET || "silver-castle-secret-key-1234";
+
+    // 1. Validate Signature
+    const hmac = crypto.createHmac('sha256', secret);
+    const digest = Buffer.from(hmac.update(req.rawBody).digest('hex'), 'utf8');
+    const signature = Buffer.from(req.get('X-Signature') || '', 'utf8');
+
+    if (!crypto.timingSafeEqual(digest, signature)) {
+        console.error("🍋 [LEMON_FAIL] Invalid Signature.");
+        res.status(401).send('Invalid signature');
+        return;
+    }
+
+    const event = req.body;
+    console.log(`🍋 [LEMON_HIT] Event: ${event.meta.event_name}`);
+
+    // 2. Process 'order_created'
+    if (event.meta.event_name === 'order_created') {
+        const { id, attributes } = event.data;
+        const customData = event.meta.custom_data || {};
+        const userId = customData.user_id; // Passed from frontend: checkout[custom][user_id]
+
+        if (!userId) {
+            console.error("🍋 [LEMON_FAIL] No user_id in custom_data. Cannot attribute purchase.");
+            res.status(400).send('Missing user_id');
+            return;
+        }
+
+        try {
+            await admin.firestore().runTransaction(async (t) => {
+                const userRef = admin.firestore().collection('users').doc(userId);
+                const purchaseRef = userRef.collection('purchases').doc(id);
+
+                // Check Idempotency
+                const doc = await t.get(purchaseRef);
+                if (doc.exists) return;
+
+                // Grant Premium
+                t.set(purchaseRef, {
+                    orderId: id,
+                    amount: attributes.total,
+                    currency: attributes.currency,
+                    status: attributes.status,
+                    email: attributes.user_email,
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                    provider: 'lemonsqueezy'
+                });
+
+                t.set(userRef, {
+                    entitlements: admin.firestore.FieldValue.arrayUnion('template_dev_premium'),
+                    isPremium: true
+                }, { merge: true });
+            });
+
+            console.log(`🍋 [LEMON_SUCCESS] Premium granted to ${userId}`);
+            res.status(200).send('Premium Granted');
+        } catch (err) {
+            console.error("🍋 [LEMON_ERR] Firestore update failed:", err);
+            res.status(500).send('Server Error');
+        }
+    } else {
+        res.status(200).send('Event ignored');
+    }
+});

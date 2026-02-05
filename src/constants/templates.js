@@ -31,7 +31,8 @@ export const TEMPLATES = {
                 year: "2019"
             }
         ],
-        skills: "React, TypeScript, Node.js, AWS, Docker, GraphQL"
+        skills: "React, TypeScript, Node.js, AWS, Docker, GraphQL",
+        templateId: "developer"
     },
     designer: {
         basicInfo: {
@@ -58,6 +59,7 @@ export const TEMPLATES = {
                 year: "2020"
             }
         ],
-        skills: "Figma, Adobe XD, Photoshop, Principle, HTML/CSS"
+        skills: "Figma, Adobe XD, Photoshop, Principle, HTML/CSS",
+        templateId: "designer"
     }
 };

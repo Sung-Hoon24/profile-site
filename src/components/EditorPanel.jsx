@@ -153,17 +153,40 @@ const EditorPanel = () => {
                 />
 
                 <div className="editor-actions" style={{ gap: '8px', flexWrap: 'wrap' }}>
-                    <button
-                        onClick={handleLoadTemplate}
-                        className="save-btn-secondary"
-                        style={{
-                            border: '1px solid #ffd700',
-                            color: isPremium ? '#ffd700' : '#aaa',
-                            background: isPremium ? 'rgba(255, 215, 0, 0.1)' : 'transparent'
-                        }}
-                    >
-                        {isPremium ? '🔓 Load Template' : '🔒 Premium Templates'}
-                    </button>
+                    {isPremium ? (
+                        <>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("Load Developer Template?")) importData(TEMPLATES.developer);
+                                }}
+                                className="save-btn-secondary"
+                                style={{ border: '1px solid #ffd700', color: '#ffd700', background: 'rgba(255, 215, 0, 0.1)' }}
+                            >
+                                Load Dev
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("Load Designer Template?")) importData(TEMPLATES.designer);
+                                }}
+                                className="save-btn-secondary"
+                                style={{ border: '1px solid #e040fb', color: '#e040fb', background: 'rgba(224, 64, 251, 0.1)' }}
+                            >
+                                Load Designer
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            onClick={handleLoadTemplate}
+                            className="save-btn-secondary"
+                            style={{
+                                border: '1px solid #aaa',
+                                color: '#aaa',
+                                background: 'transparent'
+                            }}
+                        >
+                            🔒 Premium Templates
+                        </button>
+                    )}
                     <button onClick={handleExport} className="save-btn-secondary" title="Download backup">
                         💾 Backup
                     </button>
