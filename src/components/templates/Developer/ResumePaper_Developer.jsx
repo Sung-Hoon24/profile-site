@@ -26,7 +26,7 @@ const ResumePaper_Developer = forwardRef(({ data }, ref) => {
     if (!data) return null;
 
     return (
-        <div className={`a4-page ${data?.__mode || 'preview'}`} ref={(node) => {
+        <div className={`a4-page ${data?.__mode || 'preview'} font-size-${data.theme?.fontSize || 'medium'}`} ref={(node) => {
             pageRef.current = node;
             if (typeof ref === 'function') ref(node);
             else if (ref) ref.current = node;

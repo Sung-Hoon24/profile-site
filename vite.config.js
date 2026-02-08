@@ -1,19 +1,14 @@
 import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
     plugins: [react()],
-    server: {
-        port: 5173,
-        strictPort: true,
-    },
     build: {
         outDir: 'dist_prod',
-        rollupOptions: {
-            input: {
-                main: resolve(__dirname, 'index.html'),
-            },
+        // Leaving optimizeDeps exclude as it is generally good practice for heavy libs, even if it didn't solve the Node 24 crash
+        commonjsOptions: {
+            transformMixedEsModules: true,
         },
-    },
+    }
 })

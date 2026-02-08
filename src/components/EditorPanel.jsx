@@ -1,9 +1,4 @@
-import React, { useState, useRef } from 'react';
-import { useResume } from '../context/ResumeContext';
-import { exportToJson, validateAndParseJson } from '../utils/fileHelpers';
-import SyncStatus from './SyncStatus';
-import { TEMPLATES } from '../constants/templates';
-import PricingModal from './PricingModal';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Simple Accordion Component
 const Accordion = ({ title, children, defaultOpen = false }) => {
@@ -12,9 +7,27 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
         <div className="accordion-item">
             <div className="accordion-header" onClick={() => setIsOpen(!isOpen)}>
                 <span>{title}</span>
-                <span>{isOpen ? '▲' : '▼'}</span>
+                <motion.span
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    ▼
+                </motion.span>
             </div>
-            {isOpen && <div className="accordion-content">{children}</div>}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="accordion-content"
+                        style={{ overflow: 'hidden' }}
+                    >
+                        {children}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -107,41 +120,6 @@ const EditorPanel = () => {
         }
     };
 
-    // 📸 Image Upload Handler (Base64)
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 500 * 1024) { // 500KB Limit
-            alert("Image is too large! Please use an image under 500KB.");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setData(prev => ({
-                ...prev,
-                basicInfo: {
-                    ...prev.basicInfo,
-                    profileImage: reader.result // Store Base64 string
-                }
-            }));
-        };
-        reader.readAsDataURL(file);
-    };
-
-    const removeImage = () => {
-        if (window.confirm("Remove profile photo?")) {
-            setData(prev => ({
-                ...prev,
-                basicInfo: {
-                    ...prev.basicInfo,
-                    profileImage: null
-                }
-            }));
-        }
-    };
-
     // Template Handler (Premium Feature)
     const [isPremium, setIsPremium] = useState(false); // Locking State
     const [showPricing, setShowPricing] = useState(false); // Modal State
@@ -158,7 +136,6 @@ const EditorPanel = () => {
     const handlePurchaseSuccess = () => {
         setIsPremium(true);
         // Auto-load after purchase
-        // Short delay for visual effect? No, immediate is better UX.
         loadTemplateAction();
     };
 
@@ -173,10 +150,6 @@ const EditorPanel = () => {
     // 🛠️ DEV MODE CHECK (Only show when ?dev=true is in URL)
     const searchParams = new URLSearchParams(window.location.search);
     const isDevMode = searchParams.get('dev') === 'true';
-
-    const handleTemplateSwitch = (templateId) => {
-        setData(prev => ({ ...prev, templateId }));
-    };
 
     return (
         <div className="editor-panel">
@@ -275,103 +248,38 @@ const EditorPanel = () => {
             <div className="editor-scroll-area">
                 {isDevMode && (
                     <Accordion title="0. Template Selector (Dev Only)" defaultOpen={true}>
-                        <div className="template-selector-grid">
-                            {['developer', 'designer', 'future', 'executive', 'startup'].map(id => (
-                                <button
-                                    key={id}
-                                    onClick={() => handleTemplateSwitch(id)}
-                                    className={`template-option-btn ${data.templateId === id ? 'active' : ''}`}
-                                >
-                                    {id.charAt(0).toUpperCase() + id.slice(1)}
-                                </button>
-                            ))}
-                        </div>
+                        <TemplateSelector data={data} setData={setData} />
                     </Accordion>
                 )}
 
+                <Accordion title="✨ Template & Style" defaultOpen={true}>
+                    <ThemeForm data={data} setData={setData} />
+                </Accordion>
+
                 <Accordion title="1. Basic Info" defaultOpen={true}>
-                    <div className="form-group-dark" style={{ textAlign: 'center', marginBottom: '20px' }}>
-                        <div style={{
-                            width: '80px', height: '80px', borderRadius: '50%',
-                            background: data.basicInfo?.profileImage ? `url(${data.basicInfo.profileImage}) center/cover` : '#333',
-                            margin: '0 auto 10px auto', border: '2px solid #555'
-                        }}></div>
-                        <label className="save-btn-secondary" style={{ cursor: 'pointer', display: 'inline-block', fontSize: '12px' }}>
-                            📸 Upload Photo
-                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
-                        </label>
-                        {data.basicInfo?.profileImage && (
-                            <button onClick={removeImage} style={{
-                                background: 'transparent', border: 'none', color: '#ff4444',
-                                marginLeft: '10px', cursor: 'pointer', fontSize: '12px'
-                            }}>
-                                Remove
-                            </button>
-                        )}
-                        <div style={{ fontSize: '10px', color: '#777', marginTop: '5px' }}>
-                            (Max 500KB. Stored locally in JSON.)
-                        </div>
-                    </div>
-                    <div className="form-group-dark">
-                        <label>Full Name</label>
-                        <input name="fullName" value={data.basicInfo?.fullName || ''} onChange={handleChange} placeholder="Hong Gil Dong" />
-                    </div>
-                    <div className="form-group-dark">
-                        <label>Position / Role</label>
-                        <input name="role" value={data.basicInfo?.role || ''} onChange={handleChange} placeholder="Senior Developer" />
-                    </div>
-                    <div className="form-row-dark">
-                        <div className="form-group-dark">
-                            <label>Email</label>
-                            <input name="email" value={data.basicInfo?.email || ''} onChange={handleChange} placeholder="email@example.com" />
-                        </div>
-                        <div className="form-group-dark">
-                            <label>Phone</label>
-                            <input name="phone" value={data.basicInfo?.phone || ''} onChange={handleChange} placeholder="010-0000-0000" />
-                        </div>
-                    </div>
-                    <div className="form-group-dark">
-                        <label>Summary / Intro</label>
-                        <textarea name="summary" value={data.basicInfo?.summary || ''} onChange={handleChange} rows={4} />
-                    </div>
+                    <BasicInfoForm data={data} handleChange={handleChange} setData={setData} />
                 </Accordion>
 
                 <Accordion title="2. Experience">
-                    {(data.experience || []).map((item, index) => (
-                        <div key={index} className="sub-card">
-                            <div className="card-top-actions">
-                                <span className="card-num">#{index + 1}</span>
-                                <button onClick={() => removeItem(index, 'experience')} className="delete-btn">×</button>
-                            </div>
-                            <input className="input-dark" name="company" value={item.company || ''} onChange={(e) => handleListChange(e, index, 'experience')} placeholder="Company Name" />
-                            <input className="input-dark" name="role" value={item.role || ''} onChange={(e) => handleListChange(e, index, 'experience')} placeholder="Job Title" />
-                            <input className="input-dark" name="period" value={item.period || ''} onChange={(e) => handleListChange(e, index, 'experience')} placeholder="Period (e.g. 2020 - Present)" />
-                            <textarea className="input-dark" name="desc" value={item.desc || ''} onChange={(e) => handleListChange(e, index, 'experience')} placeholder="Description..." rows={3} />
-                        </div>
-                    ))}
-                    <button onClick={() => addItem('experience')} className="add-btn-dark">+ Add Experience</button>
+                    <ExperienceForm
+                        data={data}
+                        handleListChange={handleListChange}
+                        addItem={addItem}
+                        removeItem={removeItem}
+                    />
                 </Accordion>
 
                 <Accordion title="3. Education">
-                    {(data.education || []).map((item, index) => (
-                        <div key={index} className="sub-card">
-                            <div className="card-top-actions">
-                                <span className="card-num">#{index + 1}</span>
-                                <button onClick={() => removeItem(index, 'education')} className="delete-btn">×</button>
-                            </div>
-                            <input className="input-dark" name="school" value={item.school || ''} onChange={(e) => handleListChange(e, index, 'education')} placeholder="School Name" />
-                            <input className="input-dark" name="major" value={item.major || ''} onChange={(e) => handleListChange(e, index, 'education')} placeholder="Major" />
-                            <input className="input-dark" name="year" value={item.year || ''} onChange={(e) => handleListChange(e, index, 'education')} placeholder="Graduation Year" />
-                        </div>
-                    ))}
-                    <button onClick={() => addItem('education')} className="add-btn-dark">+ Add Education</button>
+                    <EducationForm
+                        data={data}
+                        handleListChange={handleListChange}
+                        addItem={addItem}
+                        removeItem={removeItem}
+                    />
                 </Accordion>
 
                 <Accordion title="4. Skills">
-                    <div className="form-group-dark">
-                        <label>List your skills (comma separated)</label>
-                        <textarea name="skills" value={data.skills || ''} onChange={handleChange} rows={4} placeholder="React, Python, Design..." />
-                    </div>
+                    <SkillsForm data={data} handleChange={handleChange} />
                 </Accordion>
             </div>
 

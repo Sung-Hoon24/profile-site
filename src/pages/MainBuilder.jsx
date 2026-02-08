@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EditorPanel from '../components/EditorPanel';
 import PreviewPanel from '../components/PreviewPanel';
 import MobileToggleBar from '../components/MobileToggleBar';
+import PageTransition from '../components/animations/PageTransition';
 import { useResume } from '../context/ResumeContext';
 import { useSearchParams } from 'react-router-dom';
 
@@ -24,17 +25,19 @@ const MainBuilder = () => {
     if (loading) return <div className="loading-screen">Loading Profile Engine...</div>;
 
     return (
-        <div className="builder-layout">
-            <div className={`builder-left ${mobileTab === 'preview' ? 'mobile-hidden' : ''}`}>
-                <EditorPanel />
-            </div>
-            <div className={`builder-right ${mobileTab === 'editor' ? 'mobile-hidden' : ''}`}>
-                <PreviewPanel />
-            </div>
+        <PageTransition>
+            <div className="builder-layout">
+                <div className={`builder-left ${mobileTab === 'preview' ? 'mobile-hidden' : ''}`}>
+                    <EditorPanel />
+                </div>
+                <div className={`builder-right ${mobileTab === 'editor' ? 'mobile-hidden' : ''}`}>
+                    <PreviewPanel />
+                </div>
 
-            {/* Visible only on mobile via CSS */}
-            <MobileToggleBar activeTab={mobileTab} onToggle={setMobileTab} />
-        </div>
+                {/* Visible only on mobile via CSS */}
+                <MobileToggleBar activeTab={mobileTab} onToggle={setMobileTab} />
+            </div>
+        </PageTransition>
     );
 };
 

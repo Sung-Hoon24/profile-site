@@ -2,27 +2,20 @@ import React, { useRef, useState, useEffect } from 'react';
 import ResumePaper from './ResumePaper';
 import { useA4Scale } from '../hooks/useA4Scale';
 import { useAutoFitFont } from '../hooks/useAutoFitFont';
-import { exportToPdf } from '../utils/exportToPdf';
+// import { ReactToPrint } from 'react-to-print'; // Dynamic import used instead
 import '../styles/preview.css';
 
 const ResumePreviewModal = ({ isOpen, onClose, data }) => {
-    console.log('[ResumePreviewModal] Data Prop:', data); // Debug Log
+    // console.log('[ResumePreviewModal] Data Prop:', data); // Debug Log
     const stageRef = useRef(null);
     const paperRef = useRef(null);
     const autoScale = useA4Scale(stageRef);
     const [zoomMode, setZoomMode] = useState('fit'); // 'fit' | '100'
+    const [ReactToPrint, setReactToPrint] = useState(null);
 
     const scale = zoomMode === 'fit' ? autoScale : 1.0;
 
     // Toolbar States
-    const [quality, setQuality] = useState(2); // 1.5, 2, 3
-    const [margin, setMargin] = useState(0); // mm. (Logic handles this in ResumePaper padding usually, but here we can add extra print margin)
-    // Actually, margin usually handled by ResumePaper padding (12mm). 
-    // Let's interpret this "margin" as the 'print' margin option if needed, 
-    // but usually user just wants "Standard" or "No Margin".
-    // For simplicity / robustness, let's keep ResumePaper fixed 12mm padding INTERNAL, 
-    // and this margin option adds WHITE SPACE around.
-
     const [forceOnePage, setForceOnePage] = useState(true);
 
     // Auto Fit Settings - Only active when Force 1-Page is checked
@@ -33,8 +26,23 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
         active: forceOnePage // New option to toggle activity
     });
 
-    // Export State
-    const [isSaving, setIsSaving] = useState(false);
+    // Load ReactToPrint dynamically to avoid build crash
+    useEffect(() => {
+        if (isOpen) {
+            // import('react-to-print')
+            //     .then(module => {
+            //         // v3 export might be module.ReactToPrint or module.default.ReactToPrint or just module.default
+            //         // Let's check keys or rely on named export if verified.
+            //         // package.json says main: lib/index.js.
+            //         if (module.ReactToPrint) setReactToPrint(() => module.ReactToPrint);
+            //         else if (module.default && module.default.ReactToPrint) setReactToPrint(() => module.default.ReactToPrint);
+            //         else if (module.default) setReactToPrint(() => module.default);
+            //     })
+            //     .catch(err => console.error("Failed to load react-to-print", err));
+            console.log("React-to-print disabled for build check");
+        }
+    }, [isOpen]);
+
 
     // Close on ESC
     useEffect(() => {
@@ -47,21 +55,6 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
 
     if (!isOpen) return null;
 
-    const handleSavePdf = async () => {
-        if (!paperRef.current) return;
-        setIsSaving(true);
-
-        setTimeout(async () => {
-            const filename = `Resume_${data.name || 'User'}_${new Date().toISOString().slice(0, 10)}.pdf`;
-            await exportToPdf(paperRef.current, filename, {
-                quality: quality,
-                margin: 0, // We rely on internal CSS padding
-                forceOnePage: forceOnePage
-            });
-            setIsSaving(false);
-        }, 100);
-    };
-
     return (
         <div className="preview-modal-overlay">
             <div className="preview-modal-content">
@@ -69,15 +62,6 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                 <div className="preview-modal-header">
                     <div className="preview-header-left">
                         <span className="preview-title">A4 Print Preview</span>
-
-                        <div className="toolbar-group">
-                            <label className="toolbar-label">Quality:</label>
-                            <select value={quality} onChange={e => setQuality(Number(e.target.value))} className="toolbar-select">
-                                <option value={1.5}>Medium (1.5x)</option>
-                                <option value={2}>High (2.0x)</option>
-                                <option value={3}>Ultra (3.0x)</option>
-                            </select>
-                        </div>
 
                         <div className="toolbar-group">
                             <label className="toolbar-label">
@@ -96,7 +80,6 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                                 <button
                                     className={`zoom-btn ${zoomMode === 'fit' ? 'active' : ''}`}
                                     onClick={(e) => {
-                                        console.log('FIT clicked');
                                         e.stopPropagation();
                                         setZoomMode('fit');
                                     }}
@@ -106,7 +89,6 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                                 <button
                                     className={`zoom-btn ${zoomMode === '100' ? 'active' : ''}`}
                                     onClick={(e) => {
-                                        console.log('100% clicked');
                                         e.stopPropagation();
                                         setZoomMode('100');
                                     }}
@@ -118,14 +100,22 @@ const ResumePreviewModal = ({ isOpen, onClose, data }) => {
                     </div>
 
                     <div className="preview-actions">
-                        {/* Badges Removed by User Request */}
-
-                        <button className="btn-close" onClick={onClose} disabled={isSaving}>
+                        <button className="btn-close" onClick={onClose}>
                             Close (닫기)
                         </button>
-                        <button className="btn-save" onClick={handleSavePdf} disabled={isSaving}>
-                            {isSaving ? 'Saving...' : '💾 Save PDF'}
-                        </button>
+                        {ReactToPrint ? (
+                            <ReactToPrint
+                                trigger={() => <button className="btn-save">🖨️ Print / Save as PDF</button>}
+                                content={() => paperRef.current}
+                                documentTitle={`Resume_${data.name || 'User'}`}
+                                onAfterPrint={() => console.log('Print success')}
+                                removeAfterPrint
+                            />
+                        ) : (
+                            <button className="btn-save" disabled>
+                                Loading Print...
+                            </button>
+                        )}
                     </div>
                 </div>
 

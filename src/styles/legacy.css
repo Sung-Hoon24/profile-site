@@ -720,6 +720,11 @@ footer {
     background: white;
   }
 
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   .print-container {
     box-shadow: none;
     margin: 0;
