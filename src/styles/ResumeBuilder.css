@@ -84,6 +84,21 @@
     cursor: pointer;
 }
 
+.builder-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.editor-sidebar {
+    width: 450px;
+    height: 100%;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    background: #1e1e1e;
+}
+
 .workspace {
     flex: 1;
     overflow-y: auto;
@@ -91,6 +106,7 @@
     display: flex;
     justify-content: center;
     background-color: #121212;
+    position: relative;
 }
 
 .paper-canvas {
@@ -115,4 +131,34 @@
 .view-mode .paper-canvas {
     pointer-events: none;
     /* Optional: prevent interactions in view mode */
+}
+
+/* Mobile Responsiveness for Toolbar */
+@media (max-width: 768px) {
+    .builder-toolbar {
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+        justify-content: center;
+    }
+
+    .toolbar-left,
+    .toolbar-center,
+    .toolbar-right {
+        width: auto;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .toolbar-right {
+        width: 100%;
+        /* Force status and save button to new line if crowded */
+        justify-content: space-between;
+    }
+
+    .save-indicator {
+        font-size: 0.8rem;
+    }
 }

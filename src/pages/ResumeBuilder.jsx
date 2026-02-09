@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import { useResume } from '../context/ResumeContext';
-import ResumePaper_Developer from '../components/templates/Developer/ResumePaper_Developer';
-import '../styles/ResumeBuilder.css'; // Will create this next
+import ResumePaper from '../components/ResumePaper';
+import EditorPanel from '../components/EditorPanel';
+import '../styles/ResumeBuilder.css';
 
 const ResumeBuilder = () => {
-    const { data, isEditMode, setIsEditMode, saveResume, saveStatus, lang, setLang } = useResume();
+    const { data, isEditMode, setIsEditMode, saveResume, saveStatus } = useResume();
+    const componentRef = useRef();
+
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
 
     return (
         <div className="resume-builder-container">
@@ -15,7 +22,7 @@ const ResumeBuilder = () => {
                         className={`mode-btn ${isEditMode ? 'active' : ''}`}
                         onClick={() => setIsEditMode(true)}
                     >
-                        ✏️ Edit
+                        📝 Edit
                     </button>
                     <button
                         className={`mode-btn ${!isEditMode ? 'active' : ''}`}
@@ -25,34 +32,35 @@ const ResumeBuilder = () => {
                     </button>
                 </div>
 
-                <div className="toolbar-center">
-                    <select value={lang} onChange={(e) => setLang(e.target.value)} className="lang-select">
-                        <option value="ko">KR (한국어)</option>
-                        <option value="en">EN (English)</option>
-                    </select>
-                </div>
-
                 <div className="toolbar-right">
-                    <span className={`save-indicator ${saveStatus}`}>
-                        {saveStatus === 'saved' && '✅ All Saved'}
-                        {saveStatus === 'saving' && '💾 Saving...'}
-                        {saveStatus === 'unsaved' && '⚠️ Unsaved Changes'}
-                        {saveStatus === 'error' && '❌ Error'}
-                    </span>
+                    <div className={`save-indicator ${saveStatus}`}>
+                        {saveStatus === 'saving' ? 'Saving...' :
+                            saveStatus === 'saved' ? 'All changes saved' :
+                                'Unsaved changes'}
+                    </div>
                     <button onClick={saveResume} className="save-action-btn">
-                        Force Save
+                        💾 Save
+                    </button>
+                    <button onClick={handlePrint} className="save-action-btn pdf-btn" style={{ background: '#ff4b2b', borderColor: '#ff4b2b' }}>
+                        📥 PDF
                     </button>
                 </div>
             </div>
 
-            {/* Main Workspace */}
-            <div className={`workspace ${isEditMode ? 'edit-mode' : 'view-mode'}`}>
-                {/* The Paper */}
-                <div className="paper-canvas">
-                    <ResumePaper_Developer data={data} />
-                    {/* <div>Resume Paper Placeholder</div> */}
+            {/* Main Builder Area */}
+            <main className="builder-main">
+                {isEditMode && (
+                    <aside className="editor-sidebar">
+                        <EditorPanel />
+                    </aside>
+                )}
+
+                <div className={`workspace ${isEditMode ? 'edit-mode' : 'view-mode'}`}>
+                    <div className="paper-canvas">
+                        <ResumePaper data={data} ref={componentRef} />
+                    </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

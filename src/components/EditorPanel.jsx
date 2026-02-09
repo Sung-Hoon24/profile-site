@@ -1,4 +1,16 @@
+import React, { useState, useRef } from 'react';
+import { useResume } from '../context/ResumeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import TemplateSelector from './editor/TemplateSelector';
+import ThemeForm from './editor/ThemeForm';
+import BasicInfoForm from './editor/BasicInfoForm';
+import ExperienceForm from './editor/ExperienceForm';
+import EducationForm from './editor/EducationForm';
+import SkillsForm from './editor/SkillsForm';
+import SyncStatus from './SyncStatus';
+import PricingModal from './PricingModal';
+import { exportToJson, validateAndParseJson } from '../utils/fileHelpers';
+import { TEMPLATES } from '../constants/templates';
 
 // Simple Accordion Component
 const Accordion = ({ title, children, defaultOpen = false }) => {
@@ -42,8 +54,11 @@ const EditorPanel = () => {
 
     const {
         data, setData, saveResume, user, resetData, importData,
-        saveStatus, lastSaved // New Phase 3 props
+        saveStatus, lastSaved,
+        isPremium, setIsPremium // New Phase 3 props
     } = context;
+
+    console.log('[EditorPanel] isPremium:', isPremium);
 
     const fileInputRef = useRef(null);
 
@@ -121,7 +136,7 @@ const EditorPanel = () => {
     };
 
     // Template Handler (Premium Feature)
-    const [isPremium, setIsPremium] = useState(false); // Locking State
+    // const [isPremium, setIsPremium] = useState(false); // Locking State <- Removed, using Context
     const [showPricing, setShowPricing] = useState(false); // Modal State
 
     const handleLoadTemplate = () => {
@@ -246,11 +261,14 @@ const EditorPanel = () => {
             </div>
 
             <div className="editor-scroll-area">
-                {isDevMode && (
-                    <Accordion title="0. Template Selector (Dev Only)" defaultOpen={true}>
-                        <TemplateSelector data={data} setData={setData} />
-                    </Accordion>
-                )}
+                <Accordion title="0. Select Template" defaultOpen={true}>
+                    <TemplateSelector
+                        data={data}
+                        setData={setData}
+                        isPremium={isPremium}
+                        onOpenPricing={() => setShowPricing(true)}
+                    />
+                </Accordion>
 
                 <Accordion title="✨ Template & Style" defaultOpen={true}>
                     <ThemeForm data={data} setData={setData} />

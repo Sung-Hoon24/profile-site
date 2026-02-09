@@ -29,8 +29,16 @@ const LandingPage = () => {
                             🚀 Start Building
                             <div className="btn-glow"></div>
                         </Link>
-                        <button className="cta-button secondary" onClick={() => alert('Coming Soon!')}>
+                        <Link to="/builder" className="cta-button secondary">
                             📂 Load Template
+                        </Link>
+                        {/* New Login Button */}
+                        <button
+                            onClick={() => document.querySelector('.nav-btn.login-btn')?.click()}
+                            className="cta-button text-only"
+                            style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#aaa' }}
+                        >
+                            🔐 로그인
                         </button>
                     </div>
                 </section>

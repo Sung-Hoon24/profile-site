@@ -299,14 +299,12 @@ const LoginModal = ({ isOpen, onClose }) => {
                         </button>
 
                         <div className="auth-social-others">
-                            {/* TODO: 카카오 로그인은 Firebase Cloud Function 배포 후 활성화
                             <button
                                 type="button"
                                 className="auth-social-icon-btn kakao"
                                 onClick={handleKakaoLogin}
                                 title="카카오 로그인"
                             >K</button>
-                            */}
                             {/* Naver and Twitter removed as requested */}
                         </div>
                     </div>

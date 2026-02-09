@@ -60,6 +60,7 @@ export const ResumeProvider = ({ children }) => {
     // WYSIWYG & Global State
     const [isEditMode, setIsEditMode] = useState(true); // Default to Edit mode
     const [lang, setLang] = useState(INITIAL_RESUME_STATE.lang);
+    const [isPremium, setIsPremium] = useState(false); // Premium Status (Default: False)
 
     // Sync Status
     const [saveStatus, setSaveStatus] = useState('saved');
@@ -73,11 +74,12 @@ export const ResumeProvider = ({ children }) => {
 
     // 2. Local Sync & Dirty Check
     useEffect(() => {
-        if (data === INITIAL_RESUME_STATE) return;
-
-        isDirtyRef.current = true;
-        setSaveStatus('unsaved');
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+        // Always sync valid data to localStorage to prevent data loss
+        if (data) {
+            isDirtyRef.current = true;
+            setSaveStatus('unsaved');
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+        }
     }, [data]);
 
     // Actions wrapped in useCallback
@@ -162,7 +164,12 @@ export const ResumeProvider = ({ children }) => {
                 }
             } else if (!currentUser) {
                 setCustomDocId(null);
-                setData(INITIAL_RESUME_STATE);
+                // Only reset to initial state if we have NO valid local data
+                // This prevents wiping data on reload when user is not logged in
+                const localData = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (!localData) {
+                    setData(INITIAL_RESUME_STATE);
+                }
                 isDirtyRef.current = false;
                 setSaveStatus('saved');
             }
@@ -232,8 +239,10 @@ export const ResumeProvider = ({ children }) => {
         isEditMode,
         setIsEditMode,
         lang,
-        setLang
-    }), [data, user, saveResumeToCloud, resetData, importData, loading, saveStatus, lastSaved]);
+        setLang,
+        isPremium,
+        setIsPremium
+    }), [data, user, saveResumeToCloud, resetData, importData, loading, saveStatus, lastSaved, isEditMode, lang, isPremium]);
 
     return (
         <ResumeContext.Provider value={value}>

@@ -81,3 +81,39 @@
     width: 1px;
     background: rgba(255, 255, 255, 0.2);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .global-navigator {
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%;
+        /* Use more width */
+        max-width: 400px;
+        flex-wrap: wrap;
+        /* Allow wrapping if needed */
+        justify-content: center;
+        padding: 6px 10px;
+        gap: 6px;
+        border-radius: 20px;
+        /* Tighter radius for stacked look */
+    }
+
+    .nav-lang-select {
+        padding: 4px 6px;
+        font-size: 0.8rem;
+    }
+
+    .nav-btn {
+        width: 32px;
+        /* Slightly smaller */
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .nav-divider {
+        margin: 0 2px !important;
+        /* Override inline style if possible, but CSS overrides inline only with !important */
+    }
+}
