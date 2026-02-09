@@ -5,14 +5,36 @@
     left: 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    z-index: 1000;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    /* Semi-transparent backing */
+    gap: 20px;
+    z-index: 9999;
+    padding: 12px 24px;
+    background: rgba(15, 15, 25, 0.8);
+    /* Darker, distinct backing */
     border-radius: 50px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.nav-lang-select {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.nav-lang-select:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+.nav-lang-select option {
+    background: #1a1a2e;
+    color: white;
 }
 
 .nav-btn {

@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:clean": "rimraf dist && vite build",
+    "build:stable": "npm run build:clean && npm run build:clean && npm run build:clean",
     "preview": "vite preview"
   },
   "dependencies": {
     "firebase": "^11.3.1",
     "framer-motion": "^12.33.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^6.22.0",
     "react-to-print": "^3.2.0",
     "vite-plugin-cdn-import": "^1.0.1"
@@ -20,9 +22,9 @@
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.2.0",
+    "@vitejs/plugin-react": "^5.1.3",
     "@vitejs/plugin-react-swc": "^4.2.3",
-    "vite": "^6.0.0"
-  },
-  "packageManager": "yarn@4.12.0"
+    "rimraf": "^6.1.2",
+    "vite": "^6.1.0"
+  }
 }

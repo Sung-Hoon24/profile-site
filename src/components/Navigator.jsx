@@ -8,7 +8,7 @@ import '../styles/GlobalNavigator.css'; // Import Styles
 const Navigator = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { user } = useResume(); // Get User State
+    const { user, lang, setLang } = useResume(); // Get User State & Language
     const [showLoginModal, setShowLoginModal] = useState(false); // Modal State
 
     const handleLoginClick = () => {
@@ -46,6 +46,26 @@ const Navigator = () => {
                 </button>
 
                 <div className="nav-divider" style={{ width: '1px', background: 'rgba(255,255,255,0.2)', margin: '0 5px' }}></div>
+
+                {/* Language Toggle */}
+                <select
+                    value={lang}
+                    onChange={(e) => setLang(e.target.value)}
+                    className="nav-lang-select"
+                    style={{
+                        background: 'transparent',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        color: 'var(--text-primary)',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        marginRight: '8px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem'
+                    }}
+                >
+                    <option value="ko" style={{ color: 'black' }}>KR</option>
+                    <option value="en" style={{ color: 'black' }}>EN</option>
+                </select>
 
                 {user ? (
                     <button onClick={handleLogout} className="nav-btn logout-btn" title={`로그아웃 (${user.displayName || user.email})`}>

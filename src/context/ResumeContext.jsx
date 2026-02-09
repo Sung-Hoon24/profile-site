@@ -7,7 +7,9 @@ const ResumeContext = createContext();
 
 export const useResume = () => useContext(ResumeContext);
 
-const LOCAL_STORAGE_KEY = 'resumeData_v1';
+const LOCAL_STORAGE_KEY = 'resumeData_v2';
+const LEGACY_STORAGE_KEY = 'resumeData_v1';
+const CLOUD_COLLECTION = 'resumes_v2';
 
 // Helper: Sanitize and Migrate Data
 const sanitizeData = (parsed) => {
@@ -17,6 +19,7 @@ const sanitizeData = (parsed) => {
         ...parsed,
         templateId: parsed.templateId || INITIAL_RESUME_STATE.templateId,
         theme: parsed.theme || INITIAL_RESUME_STATE.theme,
+        lang: parsed.lang || INITIAL_RESUME_STATE.lang,
         basicInfo: { ...INITIAL_RESUME_STATE.basicInfo, ...(parsed.basicInfo || {}) },
         experience: Array.isArray(parsed.experience)
             ? parsed.experience.map(item => ({
@@ -34,8 +37,16 @@ export const ResumeProvider = ({ children }) => {
     // 1. Initial State with Sanitization
     const [data, setData] = useState(() => {
         try {
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            return saved ? sanitizeData(JSON.parse(saved)) : INITIAL_RESUME_STATE;
+            const savedV2 = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (savedV2) return sanitizeData(JSON.parse(savedV2));
+
+            // Migration: Check V1 if V2 is missing
+            const savedV1 = localStorage.getItem(LEGACY_STORAGE_KEY);
+            if (savedV1) {
+                console.info('🛠 Migrating data from V1 to V2...');
+                return sanitizeData(JSON.parse(savedV1));
+            }
+            return INITIAL_RESUME_STATE;
         } catch (e) {
             console.warn('LocalStorage parse error:', e);
             return INITIAL_RESUME_STATE;
@@ -45,6 +56,10 @@ export const ResumeProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [customDocId, setCustomDocId] = useState(null);
+
+    // WYSIWYG & Global State
+    const [isEditMode, setIsEditMode] = useState(true); // Default to Edit mode
+    const [lang, setLang] = useState(INITIAL_RESUME_STATE.lang);
 
     // Sync Status
     const [saveStatus, setSaveStatus] = useState('saved');
@@ -89,7 +104,7 @@ export const ResumeProvider = ({ children }) => {
 
         setSaveStatus('saving');
         try {
-            const docRef = doc(db, 'resumes', targetUid);
+            const docRef = doc(db, CLOUD_COLLECTION, targetUid);
             // Save current state 'data'
             // Note: 'data' dependency will cause this function to recreate on every change. 
             // This is expected unless we use a Ref for data, but for now this is fine.
@@ -106,7 +121,7 @@ export const ResumeProvider = ({ children }) => {
     }, [user, customDocId, data]);
 
     const checkConflict = async (uid) => {
-        const docRef = doc(db, 'resumes', uid);
+        const docRef = doc(db, CLOUD_COLLECTION, uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             setCloudDataBuffer(docSnap.data());
@@ -121,7 +136,7 @@ export const ResumeProvider = ({ children }) => {
         if (!uid) return;
         try {
             setSaveStatus('saving');
-            const docRef = doc(db, 'resumes', uid);
+            const docRef = doc(db, CLOUD_COLLECTION, uid);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 importData(docSnap.data());
@@ -168,6 +183,17 @@ export const ResumeProvider = ({ children }) => {
     }, [customDocId, user]);
 
     const resolveConflict = (decision) => {
+        // 🛡️ Safety First: Auto-Backup Local State
+        const backupTimestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const backupBlob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const backupUrl = URL.createObjectURL(backupBlob);
+        const link = document.createElement('a');
+        link.href = backupUrl;
+        link.download = `backup_local_${backupTimestamp}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
         if (decision === 'keepLocal') {
             setShowConflict(false);
             setCloudDataBuffer(null);
@@ -201,7 +227,12 @@ export const ResumeProvider = ({ children }) => {
         loading,
         saveStatus,
         lastSaved,
-        setCustomDocId
+        setCustomDocId,
+        // New Exports
+        isEditMode,
+        setIsEditMode,
+        lang,
+        setLang
     }), [data, user, saveResumeToCloud, resetData, importData, loading, saveStatus, lastSaved]);
 
     return (
