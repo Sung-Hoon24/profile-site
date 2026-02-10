@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PageTransition from '../components/animations/PageTransition';
+import LoginModal from '../components/LoginModal'; // Fixed: Import LoginModal directly
 import '../styles/LandingPage.css';
 
 const LandingPage = () => {
+    const [showLoginModal, setShowLoginModal] = React.useState(false);
+
     return (
         <PageTransition>
             <div className="landing-container">
@@ -34,7 +37,7 @@ const LandingPage = () => {
                         </Link>
                         {/* New Login Button */}
                         <button
-                            onClick={() => document.querySelector('.nav-btn.login-btn')?.click()}
+                            onClick={() => setShowLoginModal(true)}
                             className="cta-button text-only"
                             style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#aaa' }}
                         >
@@ -110,6 +113,9 @@ const LandingPage = () => {
                         </div>
                     </div>
                 </footer>
+
+                {/* Login Modal */}
+                <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
             </div>
         </PageTransition>
     );

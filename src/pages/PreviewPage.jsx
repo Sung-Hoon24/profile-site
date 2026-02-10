@@ -9,8 +9,9 @@ const PreviewPage = () => {
     // Custom handling for react-to-print to properly inject styles
     // In many cases, react-to-print works best when the styles are globally available 
     // or passed via pageStyle prop.
+    // react-to-print v3.x API: contentRef 사용
     const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
+        contentRef: componentRef,
         documentTitle: 'my-resume',
         pageStyle: `
         @page { size: A4; margin: 0mm; }

@@ -10,7 +10,7 @@ import {
     createUserWithEmailAndPassword,
     signInAnonymously // Added for Kakao "Guest" Login
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 // import { getFunctions } from "firebase/functions";
 
 
@@ -43,5 +43,6 @@ export {
     signInAnonymously,
     doc,
     getDoc,
-    setDoc
+    setDoc,
+    onSnapshot
 };

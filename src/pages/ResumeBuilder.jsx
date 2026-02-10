@@ -9,9 +9,29 @@ const ResumeBuilder = () => {
     const { data, isEditMode, setIsEditMode, saveResume, saveStatus } = useResume();
     const componentRef = useRef();
 
+    // react-to-print v3.x API: contentRef + async onBeforePrint 필수
     const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
+        contentRef: componentRef,
+        onBeforePrint: async () => { console.log('[PDF_PREPARE]'); },
+        onAfterPrint: () => { console.log('[PDF_DONE]'); },
+        onPrintError: (errorLocation, error) => { console.error('[PDF_ERR]', errorLocation, error); },
     });
+
+    const onPdfClick = () => {
+        // 1) Saving 중이면 프린트 금지 (간헐 실패 원인 제거)
+        if (saveStatus === 'saving') {
+            console.warn('[PDF] Blocked: saving in progress');
+            alert('저장 중입니다. 저장 완료 후 PDF를 눌러주세요.');
+            return;
+        }
+
+        // 2) 다음 프레임에 실행해서 DOM/레이아웃 안정화
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                handlePrint();
+            });
+        });
+    };
 
     return (
         <div className="resume-builder-container">
@@ -41,7 +61,7 @@ const ResumeBuilder = () => {
                     <button onClick={saveResume} className="save-action-btn">
                         💾 Save
                     </button>
-                    <button onClick={handlePrint} className="save-action-btn pdf-btn" style={{ background: '#ff4b2b', borderColor: '#ff4b2b' }}>
+                    <button onClick={onPdfClick} className="save-action-btn pdf-btn" style={{ background: '#ff4b2b', borderColor: '#ff4b2b' }}>
                         📥 PDF
                     </button>
                 </div>
@@ -56,8 +76,8 @@ const ResumeBuilder = () => {
                 )}
 
                 <div className={`workspace ${isEditMode ? 'edit-mode' : 'view-mode'}`}>
-                    <div className="paper-canvas">
-                        <ResumePaper data={data} ref={componentRef} />
+                    <div className="paper-canvas" ref={componentRef}>
+                        <ResumePaper data={data} />
                     </div>
                 </div>
             </main>
