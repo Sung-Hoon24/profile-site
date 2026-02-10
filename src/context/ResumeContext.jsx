@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, useRef, useMemo, useCallback } from 'react';
-import { db, doc, getDoc, setDoc, auth, onAuthStateChanged } from '../../firebase.js';
+import { db, doc, getDoc, setDoc, onSnapshot, auth, onAuthStateChanged } from '../../firebase.js';
 import { INITIAL_RESUME_STATE } from '../constants/resumeConstants';
 import ConflictModal from '../components/ConflictModal';
 
@@ -188,6 +188,32 @@ export const ResumeProvider = ({ children }) => {
             }
         }
     }, [customDocId, user]);
+
+    // 🔒 Real-time Entitlements Sync (FAIL-B Fix)
+    useEffect(() => {
+        if (!user) {
+            setIsPremium(false);
+            return;
+        }
+
+        // Listen to 'users' collection, strict check for 'resume_premium'
+        const userRef = doc(db, 'users', user.uid);
+        const unsubscribe = onSnapshot(userRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const hasPremium = data.entitlements?.includes('resume_premium') || false;
+                setIsPremium(hasPremium);
+                console.log('entitlements updated:', hasPremium);
+            } else {
+                setIsPremium(false); // Fail closed
+            }
+        }, (error) => {
+            console.warn("Entitlement sync skipped:", error.code);
+            setIsPremium(false);
+        });
+
+        return () => unsubscribe();
+    }, [user]);
 
     const resolveConflict = (decision) => {
         // 🛡️ Safety First: Auto-Backup Local State
