@@ -62,10 +62,21 @@ exports.verifyPayment = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('not-found', 'Payment not found in PortOne');
         }
 
-        // 4. Verify Amount & Status
-        const TARGET_AMOUNT = 5000;
+        // 4. Verify Amount & Status (Dynamic Check)
+        const productRef = admin.firestore().collection('products').doc('resume_premium');
+        const productSnap = await productRef.get();
+
+        if (!productSnap.exists) {
+            console.error('[VERIFY_FAIL] Product not found: resume_premium');
+            throw new functions.https.HttpsError('not-found', 'Product definition not found');
+        }
+
+        const productData = productSnap.data();
+        // Ensure price is compared as number
+        const TARGET_AMOUNT = Number(productData.price);
+
         if (paymentData.status !== 'paid' || paymentData.amount !== TARGET_AMOUNT) {
-            console.error('[VERIFY_FAIL] Invalid Status/Amount', paymentData);
+            console.error(`[VERIFY_FAIL] Amount Mismatch. Expected: ${TARGET_AMOUNT}, Got: ${paymentData.amount}`);
             throw new functions.https.HttpsError('failed-precondition', 'Payment verification failed (Amount mismatch or not paid)');
         }
 
@@ -85,7 +96,7 @@ exports.verifyPayment = functions.https.onCall(async (data, context) => {
                 t.set(purchaseRef, {
                     imp_uid: imp_uid,
                     merchant_uid: merchant_uid,
-                    productId: 'template_dev_premium',
+                    productId: 'resume_premium',
                     amount: paymentData.amount,
                     status: 'paid',
                     purchasedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -95,7 +106,7 @@ exports.verifyPayment = functions.https.onCall(async (data, context) => {
 
                 // Update Entitlements (Safe Array Union)
                 t.set(userRef, {
-                    entitlements: admin.firestore.FieldValue.arrayUnion('template_dev_premium')
+                    entitlements: admin.firestore.FieldValue.arrayUnion('resume_premium')
                 }, { merge: true });
             });
 
@@ -199,7 +210,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
             t.set(purchaseRef, {
                 imp_uid: imp_uid,
                 merchant_uid: paymentData.merchant_uid,
-                productId: 'template_dev_premium',
+                productId: 'resume_premium',
                 amount: paymentData.amount,
                 status: 'paid',
                 purchasedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -210,7 +221,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
 
             // Update Entitlements
             t.set(userRef, {
-                entitlements: admin.firestore.FieldValue.arrayUnion('template_dev_premium')
+                entitlements: admin.firestore.FieldValue.arrayUnion('resume_premium')
             }, { merge: true });
         });
 
@@ -278,7 +289,7 @@ exports.lemonSqueezyWebhook = functions.https.onRequest(async (req, res) => {
                 });
 
                 t.set(userRef, {
-                    entitlements: admin.firestore.FieldValue.arrayUnion('template_dev_premium'),
+                    entitlements: admin.firestore.FieldValue.arrayUnion('resume_premium'),
                     isPremium: true
                 }, { merge: true });
             });
