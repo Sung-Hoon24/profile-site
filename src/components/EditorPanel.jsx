@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useResume } from '../context/ResumeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateSelector from './editor/TemplateSelector';
@@ -8,7 +8,7 @@ import ExperienceForm from './editor/ExperienceForm';
 import EducationForm from './editor/EducationForm';
 import SkillsForm from './editor/SkillsForm';
 import SyncStatus from './SyncStatus';
-import PricingModal from './PricingModal';
+import PremiumModal from './PremiumModal';
 import { exportToJson, validateAndParseJson } from '../utils/fileHelpers';
 import { TEMPLATES } from '../constants/templates';
 
@@ -136,7 +136,6 @@ const EditorPanel = () => {
     };
 
     // Template Handler (Premium Feature)
-    // const [isPremium, setIsPremium] = useState(false); // Locking State <- Removed, using Context
     const [showPricing, setShowPricing] = useState(false); // Modal State
 
     const handleLoadTemplate = () => {
@@ -148,11 +147,16 @@ const EditorPanel = () => {
         }
     };
 
-    const handlePurchaseSuccess = () => {
-        setIsPremium(true);
-        // Auto-load after purchase
-        loadTemplateAction();
-    };
+    // Auto-load template logic could be added here if needed,
+    // but simplified to just unlock UI. Context update handles state.
+
+    // Watch for premium upgrade
+    useEffect(() => {
+        if (isPremium && showPricing) {
+            setShowPricing(false);
+            // Optional: Auto-load default template or show success toast
+        }
+    }, [isPremium]);
 
     const loadTemplateAction = () => {
         if (window.confirm("Load 'Developer' Example Template? Current data will be replaced.")) {
@@ -302,10 +306,9 @@ const EditorPanel = () => {
             </div>
 
             {/* Premium Pricing Modal */}
-            <PricingModal
+            <PremiumModal
                 isOpen={showPricing}
                 onClose={() => setShowPricing(false)}
-                onUnlockSuccess={handlePurchaseSuccess}
             />
         </div>
     );

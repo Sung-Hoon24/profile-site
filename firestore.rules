@@ -7,6 +7,11 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // Resume V2 Rules (Active Collection)
+    match /resumes_v2/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
     // 💰 Phase 1: Products (Public Read, Admin Write)
     match /products/{productId} {
       allow read: if true; 
@@ -20,18 +25,23 @@ service cloud.firestore {
       allow create, update, delete: if false; // 🛑 STRICT: Only Cloud Functions can write here
     }
 
-    // 👤 Phase 1: User Profile & Entitlements Protection
+    // 👤 User Profile & Entitlements Protection
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
-      
-      // Allow update IF AND ONLY IF 'entitlements' is NOT changed
-      allow update: if request.auth != null 
-                    && request.auth.uid == userId
-                    && (
-                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['entitlements'])
-                    );
-                    
-      allow create: if request.auth != null && request.auth.uid == userId; // Initial creation allowed
+
+      // 🛡️ Helper: entitlements 필드 조작 방지
+      function isNotTouchingEntitlements() {
+        return !('entitlements' in request.resource.data) || 
+               (resource != null && request.resource.data.entitlements == resource.data.entitlements);
+      }
+
+      // ✅ create: entitlements 포함 시 거부
+      allow create: if request.auth != null && request.auth.uid == userId
+                    && !('entitlements' in request.resource.data);
+
+      // ✅ update: entitlements 변경 시 거부
+      allow update: if request.auth != null && request.auth.uid == userId
+                    && isNotTouchingEntitlements();
     }
   }
 }
