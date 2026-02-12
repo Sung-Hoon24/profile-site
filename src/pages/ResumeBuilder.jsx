@@ -33,9 +33,31 @@ const ResumeBuilder = () => {
         });
     };
 
+    // 📍 PROBE: 현재 화면이 ResumeBuilder인지 진단하는 배너
+    const isMock = new URLSearchParams(window.location.search).get('mockPremium') === '1';
+
     return (
         <div className="resume-builder-container">
-            {/* Toolbar */}
+            {/* 📍 PROBE 배너: ResumeBuilder가 마운트되었는지 시각 증명 */}
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                zIndex: 9999,
+                width: '100%',
+                backgroundColor: isMock ? '#ff0000' : '#0000ff',
+                color: 'white',
+                padding: '10px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                pointerEvents: 'none'
+            }}>
+                📍 PROBE: ResumeBuilder Mounted
+                | Mock={isMock ? 'ON' : 'OFF'}
+                | Path={window.location.pathname}
+                | Search={window.location.search}
+                | Href={window.location.href}
+            </div>
             <div className="builder-toolbar">
                 <div className="toolbar-left">
                     <button

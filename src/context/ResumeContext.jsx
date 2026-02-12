@@ -60,7 +60,12 @@ export const ResumeProvider = ({ children }) => {
     // WYSIWYG & Global State
     const [isEditMode, setIsEditMode] = useState(true); // Default to Edit mode
     const [lang, setLang] = useState(INITIAL_RESUME_STATE.lang);
-    const [isPremium, setIsPremium] = useState(false); // Premium Status (Default: False)
+    // 🧪 mockPremium=1이면 첫 렌더부터 premium 상태로 시작 (깜빡임 방지)
+    const [isPremium, setIsPremium] = useState(() => {
+        try {
+            return new URLSearchParams(window.location.search).get('mockPremium') === '1';
+        } catch { return false; }
+    });
 
     // Sync Status
     const [saveStatus, setSaveStatus] = useState('saved');
@@ -189,8 +194,29 @@ export const ResumeProvider = ({ children }) => {
         }
     }, [customDocId, user]);
 
+    // 🧪 [DEV 전용] Mock Premium 토글 (동기 감지 - 타이밍 경쟁 방지)
+    // useEffect가 아닌 렌더 시점에 즉시 판별하여, 다른 useEffect보다 먼저 확정됨
+    const isMockPremiumRef = useRef(() => {
+        try {
+            return new URLSearchParams(window.location.search).get('mockPremium') === '1';
+        } catch { return false; }
+    });
+    // 🧪 최초 렌더 시 ref에 결과 캐싱 (함수 → boolean 변환)
+    if (typeof isMockPremiumRef.current === 'function') {
+        isMockPremiumRef.current = isMockPremiumRef.current();
+        if (isMockPremiumRef.current) {
+            console.log('%c[DEV] Mock Premium Mode ON 🧪', 'color: #FFD700; font-weight: bold;');
+        }
+    }
+
     // 🔒 Real-time Entitlements Sync (FAIL-B Fix)
     useEffect(() => {
+        // 🧪 Mock 모드가 켜져 있으면 Firestore 감시를 건너뛰고 premium 유지
+        if (isMockPremiumRef.current) {
+            console.log('[DEV] Mock Premium 활성 → Firestore entitlements 감시 건너뜀');
+            return;
+        }
+
         if (!user) {
             setIsPremium(false);
             return;
