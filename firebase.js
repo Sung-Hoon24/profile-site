@@ -11,7 +11,7 @@ import {
     signInAnonymously // Added for Kakao "Guest" Login
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
-// import { getFunctions } from "firebase/functions";
+import { getFunctions } from "firebase/functions"; // 주석 해제: httpsCallable 연결 복구용
 
 
 // TODO: Replace the following with your app's Firebase project configuration
@@ -31,7 +31,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize Services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-// export const functions = getFunctions(app); // Added for Cloud Functions
+export const functions = getFunctions(app); // 주석 해제: Cloud Functions 연결 복구
 export const provider = new GoogleAuthProvider();
 
 export {

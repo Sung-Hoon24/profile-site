@@ -304,3 +304,27 @@ exports.lemonSqueezyWebhook = functions.https.onRequest(async (req, res) => {
         res.status(200).send('Event ignored');
     }
 });
+
+/**
+ * Kakao Token Exchange (뼈대)
+ *
+ * firebase.json rewrite: /api/kakao-token → kakaoTokenExchange
+ * 현재는 뼈대만 존재하며, 실제 토큰 교환 로직은 미구현 상태.
+ * 목적: rewrite 경로가 실존 함수를 가리키도록 하여 404 방지.
+ */
+exports.kakaoTokenExchange = functions.https.onRequest(async (req, res) => {
+    // POST 외 메서드 차단
+    if (req.method !== 'POST') {
+        res.status(405).json({ error: 'Method Not Allowed' });
+        return;
+    }
+
+    // 요청 수신 로그
+    console.log('[KAKAO_TOKEN] 요청 수신 — 뼈대 함수 (미구현)');
+
+    // 뼈대 응답: 실제 토큰 교환 로직은 아직 구현되지 않음
+    res.status(501).json({
+        error: 'not_implemented',
+        message: 'kakaoTokenExchange is a skeleton. Token exchange logic is not yet implemented.'
+    });
+});
