@@ -254,13 +254,13 @@ exports.lemonSqueezyWebhook = functions.https.onRequest(async (req, res) => {
     const signature = Buffer.from(req.get('X-Signature') || '', 'utf8');
 
     if (!crypto.timingSafeEqual(digest, signature)) {
-        console.error("🍋 [LEMON_FAIL] Invalid Signature.");
+        functions.logger.error("🍋 [LEMON_FAIL] Invalid Signature.");
         res.status(401).send('Invalid signature');
         return;
     }
 
     const event = req.body;
-    console.log(`🍋 [LEMON_HIT] Event: ${event.meta.event_name}`);
+    functions.logger.info(`🍋 [LEMON_HIT] Event: ${event.meta.event_name}`);
 
     // 2. Process 'order_created'
     if (event.meta.event_name === 'order_created') {
