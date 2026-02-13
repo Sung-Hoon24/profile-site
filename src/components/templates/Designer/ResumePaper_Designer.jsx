@@ -23,136 +23,148 @@ const ResumePaper_Designer = forwardRef(({ data }, ref) => {
 
     if (!data) return null;
 
-    // --- DESIGNER STYLE CONSTANTS ---
-    const THEME_COLOR = '#8e24aa'; // Deep Purple
-    const SIDEBAR_BG = '#f3e5f5'; // Light Purple BG for sidebar
-    const TEXT_DARK = '#333';
-    const TEXT_LIGHT = '#666';
+    // --- DESIGNER STYLE CONSTANTS (프리미엄 업그레이드) ---
+    const THEME_COLOR = '#6b3a7d'; // 뮤트드 와인 퍼플 (원색→고급 톤)
+    const SIDEBAR_BG = '#2d2235'; // 다크 퍼플 사이드바 (고급감 격상)
+    const SIDEBAR_TEXT = '#e8dff0'; // 사이드바 밝은 텍스트
+    const TEXT_DARK = '#1a1a2e'; // 깊은 차콜 (더 선명한 대비)
+    const TEXT_LIGHT = '#555';
 
     const styles = {
         page: {
             display: 'grid',
             gridTemplateColumns: '32% 68%',
             height: '100%',
-            minHeight: '297mm', // Ensure full A4 height
+            minHeight: '297mm',
             fontFamily: "'Inter', 'Segoe UI', sans-serif",
             color: TEXT_DARK,
         },
         sidebar: {
             background: SIDEBAR_BG,
-            padding: '40px 20px',
+            padding: '45px 24px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '30px',
-            borderRight: '1px solid rgba(0,0,0,0.05)'
+            gap: '32px', // 간격 확대
         },
         main: {
-            padding: '40px 30px',
+            padding: '45px 36px',
             background: 'white',
             display: 'flex',
             flexDirection: 'column',
-            gap: '25px',
+            gap: '32px', // 섹션 간격 1.5배
         },
-        // Components
         avatarPlaceholder: {
-            width: '120px',
-            height: '120px',
-            background: THEME_COLOR,
+            width: '110px',
+            height: '110px',
+            background: `linear-gradient(135deg, ${THEME_COLOR}, #9b59b6)`, // 그라디언트
             borderRadius: '50%',
-            margin: '0 auto 10px auto',
+            margin: '0 auto 14px auto',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '40px',
+            fontSize: '38px',
             color: 'white',
-            boxShadow: '0 4px 10px rgba(142, 36, 170, 0.3)'
+            boxShadow: '0 6px 20px rgba(107, 58, 125, 0.4)',
+            border: '3px solid rgba(255,255,255,0.15)'
         },
         nameTitle: {
             textAlign: 'center',
-            marginBottom: '10px'
+            marginBottom: '8px'
         },
         h1: {
-            fontSize: '28px',
+            fontSize: '26px', // 사이드바 내 이름 (공간 고려)
             fontWeight: '800',
-            color: THEME_COLOR,
+            color: '#ffffff', // 다크 사이드바 위 흰색
             margin: 0,
-            lineHeight: 1.2
+            lineHeight: 1.15,
+            letterSpacing: '-0.5px'
         },
         role: {
-            fontSize: '14px',
-            color: TEXT_LIGHT,
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.6)',
             fontWeight: '600',
-            marginTop: '5px',
+            marginTop: '8px',
             textTransform: 'uppercase',
-            letterSpacing: '1px'
+            letterSpacing: '2.5px' // 넓은 자간
         },
         sectionTitleSide: {
-            fontSize: '16px',
+            fontSize: '11px',
             fontWeight: '700',
-            color: THEME_COLOR,
+            color: 'rgba(255,255,255,0.5)', // 사이드바용 뮤트 텍스트
             textTransform: 'uppercase',
-            borderBottom: `2px solid ${THEME_COLOR}`,
-            paddingBottom: '5px',
-            marginBottom: '15px'
+            letterSpacing: '2px',
+            borderBottom: '1px solid rgba(255,255,255,0.12)',
+            paddingBottom: '8px',
+            marginBottom: '16px'
         },
         sectionTitleMain: {
-            fontSize: '20px',
-            fontWeight: '800',
+            fontSize: '13px',
+            fontWeight: '700',
             color: TEXT_DARK,
             textTransform: 'uppercase',
+            letterSpacing: '2.5px', // 넓은 자간으로 고급감
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
-            marginBottom: '20px'
+            marginBottom: '20px',
+            borderBottom: '1px solid #e5e5e5',
+            paddingBottom: '10px'
         },
         contactItem: {
-            fontSize: '13px',
-            marginBottom: '10px',
-            wordBreak: 'break-all'
+            fontSize: '12px',
+            marginBottom: '12px',
+            wordBreak: 'break-all',
+            color: SIDEBAR_TEXT,
+            lineHeight: 1.5
         },
         contactLabel: {
-            fontWeight: 'bold',
+            fontWeight: '600',
             display: 'block',
-            fontSize: '11px',
-            color: THEME_COLOR
+            fontSize: '10px',
+            color: 'rgba(255,255,255,0.4)',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            marginBottom: '2px'
         },
         skillTag: {
             display: 'inline-block',
-            background: 'white',
-            border: `1px solid ${THEME_COLOR}`,
-            color: THEME_COLOR,
-            padding: '4px 10px',
-            borderRadius: '15px',
-            fontSize: '12px',
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            color: SIDEBAR_TEXT,
+            padding: '5px 12px',
+            borderRadius: '20px',
+            fontSize: '11px',
             marginBottom: '8px',
-            marginRight: '5px',
-            fontWeight: '600'
+            marginRight: '6px',
+            fontWeight: '500'
         },
         expItem: {
-            marginBottom: '25px',
+            marginBottom: '28px', // 항목 간격 확대
             position: 'relative',
             paddingLeft: '20px',
-            borderLeft: `2px solid #eee`
+            borderLeft: `2px solid ${THEME_COLOR}` // 포인트 컬러 보더
         },
         expCompany: {
-            fontSize: '16px',
-            fontWeight: 'bold',
-            color: TEXT_DARK
+            fontSize: '15px',
+            fontWeight: '700',
+            color: TEXT_DARK,
+            letterSpacing: '-0.3px'
         },
         expRole: {
-            fontSize: '14px',
+            fontSize: '13px',
             color: THEME_COLOR,
             fontWeight: '600',
-            marginBottom: '5px'
+            marginBottom: '4px'
         },
         expDate: {
-            fontSize: '12px',
+            fontSize: '11px',
             color: '#999',
-            marginBottom: '8px'
+            marginBottom: '8px',
+            letterSpacing: '0.5px'
         },
         expDesc: {
             fontSize: '13px',
-            lineHeight: 1.6,
+            lineHeight: 1.7, // 본문 줄간격 확대
             color: '#555'
         }
     };

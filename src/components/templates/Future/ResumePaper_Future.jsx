@@ -23,12 +23,13 @@ const ResumePaper_Future = forwardRef(({ data }, ref) => {
 
     if (!data) return null;
 
-    // --- FUTURE THEME CONSTANTS ---
-    const ACCENT_COLOR = '#00e5ff'; // Neon Cyan
-    const BG_COLOR = '#ffffff';
-    const TEXT_MAIN = '#111';
-    const TEXT_MUTED = '#666';
-    const BORDER_COLOR = '#eee';
+    // --- FUTURE THEME CONSTANTS (프리미엄 업그레이드) ---
+    const ACCENT_COLOR = '#0d9488'; // 뮤트드 틸 (네온→세련된 톤)
+    const ACCENT_GLOW = 'rgba(13, 148, 136, 0.15)'; // 은은한 글로우
+    const BG_COLOR = '#fafbfc'; // 미세하게 차가운 화이트
+    const TEXT_MAIN = '#0f172a'; // 슬레이트-900 (깊은 대비)
+    const TEXT_MUTED = '#64748b'; // 슬레이트-500
+    const BORDER_COLOR = '#e2e8f0'; // 슬레이트-200
 
     // Google Font Injection for 'Orbitron'
     React.useEffect(() => {
@@ -44,53 +45,55 @@ const ResumePaper_Future = forwardRef(({ data }, ref) => {
             background: BG_COLOR,
             color: TEXT_MAIN,
             fontFamily: "'Inter', sans-serif",
-            padding: '40px 50px',
+            padding: '45px 50px',
             minHeight: '297mm',
             display: 'flex',
             flexDirection: 'column',
-            gap: '30px'
+            gap: '32px' // 간격 확대
         },
         header: {
-            borderBottom: `1px solid ${ACCENT_COLOR}`,
-            paddingBottom: '20px',
+            borderBottom: `2px solid ${ACCENT_COLOR}`,
+            paddingBottom: '24px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-end'
         },
         name: {
             fontFamily: "'Orbitron', sans-serif",
-            fontSize: '32px',
+            fontSize: '30px', // 약간 축소하여 세련됨
             fontWeight: '700',
-            letterSpacing: '2px',
+            letterSpacing: '3px',
             textTransform: 'uppercase',
-            margin: 0
+            margin: 0,
+            color: TEXT_MAIN
         },
         role: {
             fontFamily: "'Orbitron', sans-serif",
-            fontSize: '14px',
+            fontSize: '11px',
             color: ACCENT_COLOR,
             fontWeight: '600',
-            letterSpacing: '1px',
-            marginTop: '5px'
+            letterSpacing: '2px',
+            marginTop: '8px'
         },
         contact: {
             fontSize: '12px',
             textAlign: 'right',
             color: TEXT_MUTED,
-            lineHeight: 1.6
+            lineHeight: 1.8
         },
         section: {
-            marginBottom: '10px'
+            marginBottom: '12px'
         },
         sectionTitle: {
             fontFamily: "'Orbitron', sans-serif",
-            fontSize: '16px',
+            fontSize: '11px', // 작고 넓은 자간으로 고급감
             fontWeight: '700',
             textTransform: 'uppercase',
+            letterSpacing: '3px',
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            marginBottom: '15px',
+            gap: '12px',
+            marginBottom: '18px',
             color: TEXT_MAIN
         },
         line: {
@@ -101,41 +104,45 @@ const ResumePaper_Future = forwardRef(({ data }, ref) => {
         grid2: {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: '30px'
+            gap: '36px' // 그리드 간격 확대
         },
         expItem: {
-            marginBottom: '20px',
+            marginBottom: '24px', // 간격 확대
             borderLeft: `2px solid ${ACCENT_COLOR}`,
-            paddingLeft: '15px'
+            paddingLeft: '16px'
         },
         expHeader: {
             display: 'flex',
             justifyContent: 'space-between',
-            marginBottom: '5px'
+            marginBottom: '6px'
         },
         expRole: {
             fontWeight: '700',
-            fontSize: '14px'
+            fontSize: '14px',
+            color: TEXT_MAIN
         },
         expDate: {
-            fontSize: '12px',
+            fontSize: '11px',
             color: ACCENT_COLOR,
-            fontFamily: "'Orbitron', sans-serif"
+            fontFamily: "'Orbitron', sans-serif",
+            letterSpacing: '0.5px'
         },
         expCompany: {
-            fontSize: '13px',
+            fontSize: '12px',
             color: TEXT_MUTED,
-            marginBottom: '5px'
+            marginBottom: '6px'
         },
         skillTag: {
             border: `1px solid ${BORDER_COLOR}`,
-            padding: '5px 10px',
+            padding: '6px 12px',
             fontSize: '11px',
             display: 'inline-block',
             marginRight: '8px',
             marginBottom: '8px',
             fontFamily: "'Orbitron', sans-serif",
-            color: TEXT_MUTED
+            color: TEXT_MUTED,
+            letterSpacing: '0.5px',
+            background: 'white'
         }
     };
 

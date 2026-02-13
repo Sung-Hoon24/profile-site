@@ -22,10 +22,10 @@ const ResumePaper_Startup = forwardRef(({ data }, ref) => {
 
     if (!data) return null;
 
-    // --- STARTUP THEME (SWISS STYLE) ---
-    const ACCENT_RED = '#ff3b30'; // Swiss Red
-    const DARK_BG = '#111';
-    const TEXT_MAIN = '#000';
+    // --- STARTUP THEME (프리미엄 업그레이드 - SWISS STYLE) ---
+    const ACCENT_RED = '#c0392b'; // 뮤트드 다크 레드 (원색→고급 톤)
+    const DARK_BG = '#1a1a2e'; // 깊은 차콜 (더 세련된 다크)
+    const TEXT_MAIN = '#0f172a'; // 슬레이트-900
 
     // Google Font Injection for 'Oswald' & 'Inter'
     React.useEffect(() => {
@@ -41,18 +41,18 @@ const ResumePaper_Startup = forwardRef(({ data }, ref) => {
             background: '#ffffff',
             color: TEXT_MAIN,
             fontFamily: "'Inter', sans-serif",
-            padding: '40px',
+            padding: '45px', // 여유로운 패딩
             minHeight: '297mm',
             display: 'grid',
-            gridTemplateColumns: '1fr 2fr', // Left 1/3, Right 2/3
-            gap: '40px'
+            gridTemplateColumns: '1fr 2fr',
+            gap: '44px' // 간격 확대
         },
         leftCol: {
-            borderRight: `4px solid ${TEXT_MAIN}`,
-            paddingRight: '30px',
+            borderRight: `3px solid ${TEXT_MAIN}`, // 4px→3px (세련된 비율)
+            paddingRight: '32px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '30px'
+            gap: '32px' // 간격 확대
         },
         rightCol: {
             display: 'flex',
@@ -61,86 +61,100 @@ const ResumePaper_Startup = forwardRef(({ data }, ref) => {
         },
         name: {
             fontFamily: "'Oswald', sans-serif",
-            fontSize: '64px',
-            lineHeight: 0.9,
+            fontSize: '52px', // 약간 축소하여 세련됨
+            lineHeight: 0.92,
             fontWeight: '700',
             textTransform: 'uppercase',
             color: TEXT_MAIN,
-            wordBreak: 'break-word'
+            wordBreak: 'break-word',
+            letterSpacing: '-1px'
         },
         role: {
             fontFamily: "'Inter', sans-serif",
-            fontSize: '18px',
-            fontWeight: '800',
-            background: TEXT_MAIN,
+            fontSize: '11px', // 축소 + 넓은 자간
+            fontWeight: '700',
+            background: ACCENT_RED, // 포인트 컬러 적용
             color: '#fff',
             display: 'inline-block',
-            padding: '5px 12px',
-            marginTop: '20px',
-            textTransform: 'uppercase'
+            padding: '6px 14px',
+            marginTop: '16px',
+            textTransform: 'uppercase',
+            letterSpacing: '2px' // 넓은 자간
         },
         sectionTitle: {
             fontFamily: "'Oswald', sans-serif",
-            fontSize: '24px',
+            fontSize: '14px', // 축소 + 넓은 자간
             fontWeight: '700',
             textTransform: 'uppercase',
-            borderBottom: `4px solid ${ACCENT_RED}`,
+            letterSpacing: '2px', // 넓은 자간
+            borderBottom: `3px solid ${ACCENT_RED}`, // 4px→3px
             display: 'inline-block',
-            marginBottom: '20px',
-            paddingBottom: '5px'
+            marginBottom: '22px', // 확대
+            paddingBottom: '8px' // 확대
         },
         contactItem: {
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: '600',
-            marginBottom: '8px',
+            marginBottom: '12px', // 간격 확대
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            lineHeight: 1.5
         },
         contactLabel: {
             fontSize: '10px',
-            color: '#666',
-            textTransform: 'uppercase'
+            color: '#94a3b8', // 슬레이트-400 (뮤트드)
+            textTransform: 'uppercase',
+            letterSpacing: '1px', // 자간 추가
+            marginBottom: '2px'
         },
         expItem: {
-            marginBottom: '30px'
+            marginBottom: '32px' // 간격 확대
         },
         expRole: {
-            fontSize: '20px',
+            fontSize: '16px', // 약간 축소
             fontWeight: '800',
-            color: ACCENT_RED
+            color: ACCENT_RED,
+            letterSpacing: '-0.3px'
         },
         expCompany: {
-            fontSize: '16px',
+            fontSize: '14px',
             fontWeight: '700',
-            marginBottom: '5px'
+            marginBottom: '4px',
+            color: TEXT_MAIN
         },
         expDate: {
-            fontSize: '14px',
+            fontSize: '12px',
             fontWeight: '500',
-            color: '#555',
+            color: '#94a3b8', // 뮤트드 그레이
             fontStyle: 'italic',
-            marginBottom: '10px'
+            marginBottom: '10px',
+            letterSpacing: '0.3px'
         },
         expDesc: {
-            fontSize: '14px',
-            lineHeight: 1.5,
-            fontWeight: '400'
+            fontSize: '13px',
+            lineHeight: 1.7, // 줄간격 확대
+            fontWeight: '400',
+            color: '#475569' // 슬레이트-600
         },
         skillTag: {
             display: 'inline-block',
-            padding: '8px 12px',
-            background: '#eee',
-            fontSize: '14px',
-            fontWeight: '700',
-            margin: '0 8px 8px 0',
-            borderLeft: `3px solid ${ACCENT_RED}`
+            padding: '6px 14px', // 약간 확대
+            background: 'transparent', // 투명 배경
+            border: `1px solid #e2e8f0`, // 아웃라인 스타일
+            fontSize: '12px',
+            fontWeight: '600',
+            margin: '0 8px 10px 0', // 간격 확대
+            borderLeft: `3px solid ${ACCENT_RED}`,
+            color: TEXT_MAIN,
+            letterSpacing: '0.3px'
         },
         summaryBox: {
-            border: `2px solid ${TEXT_MAIN}`,
-            padding: '20px',
-            fontSize: '15px',
-            lineHeight: 1.6,
-            fontWeight: '500'
+            border: `1px solid ${TEXT_MAIN}`, // 2px→1px (세련된 비율)
+            padding: '22px', // 확대
+            fontSize: '14px',
+            lineHeight: 1.75, // 줄간격 확대
+            fontWeight: '400',
+            color: '#475569' // 슬레이트-600
         }
     };
 

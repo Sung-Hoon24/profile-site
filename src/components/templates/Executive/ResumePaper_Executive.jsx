@@ -23,12 +23,12 @@ const ResumePaper_Executive = forwardRef(({ data }, ref) => {
 
     if (!data) return null;
 
-    // --- EXECUTIVE THEME CONSTANTS ---
-    const PRIMARY_COLOR = '#1a237e'; // Navy Blue
-    const ACCENT_COLOR = '#c5a059'; // Muted Gold
-    const TEXT_MAIN = '#222';
-    const TEXT_MUTED = '#555';
-    const BORDER_COLOR = '#ddd';
+    // --- EXECUTIVE THEME CONSTANTS (프리미엄 업그레이드) ---
+    const PRIMARY_COLOR = '#1e293b'; // 깊은 슬레이트 (네이비→뮤트드)
+    const ACCENT_COLOR = '#a67c52'; // 앤틱 골드 (더 우아한 톤)
+    const TEXT_MAIN = '#0f172a';    // 슬레이트-900
+    const TEXT_MUTED = '#64748b';   // 슬레이트-500
+    const BORDER_COLOR = '#e2e8f0'; // 슬레이트-200
 
     // Google Font Injection for 'Merriweather' (Serif)
     React.useEffect(() => {
@@ -48,114 +48,122 @@ const ResumePaper_Executive = forwardRef(({ data }, ref) => {
             minHeight: '297mm',
             display: 'flex',
             flexDirection: 'column',
-            gap: '35px'
+            gap: '36px' // 간격 확대
         },
         header: {
             borderBottom: `2px solid ${PRIMARY_COLOR}`,
-            paddingBottom: '25px',
+            paddingBottom: '28px', // 확대
             textAlign: 'center'
         },
         name: {
             fontFamily: "'Merriweather', serif",
-            fontSize: '36px',
+            fontSize: '38px', // 크고 임팩트 있는 이름
             fontWeight: '900',
             color: PRIMARY_COLOR,
             margin: '0 0 10px 0',
-            letterSpacing: '-0.5px'
+            letterSpacing: '-0.5px',
+            lineHeight: 1.15
         },
         role: {
             fontFamily: "'Merriweather', serif",
-            fontSize: '16px',
+            fontSize: '12px', // 축소 + 넓은 자간으로 고급감
             color: ACCENT_COLOR,
             fontWeight: '700',
             textTransform: 'uppercase',
-            letterSpacing: '1px',
-            marginBottom: '15px'
+            letterSpacing: '3px', // 넓은 자간
+            marginBottom: '16px'
         },
         contactRow: {
             display: 'flex',
             justifyContent: 'center',
-            gap: '20px',
-            fontSize: '13px',
+            gap: '24px', // 간격 확대
+            fontSize: '12px',
             color: TEXT_MUTED,
-            fontFamily: "'Lato', sans-serif"
+            fontFamily: "'Lato', sans-serif",
+            letterSpacing: '0.3px'
         },
         section: {
-            marginBottom: '10px'
+            marginBottom: '12px' // 약간 확대
         },
         sectionTitle: {
             fontFamily: "'Merriweather', serif",
-            fontSize: '18px',
+            fontSize: '11px', // 작고 넓은 자간 = 최고급
             fontWeight: '700',
             color: PRIMARY_COLOR,
             textTransform: 'uppercase',
+            letterSpacing: '3px', // 넓은 자간
             borderBottom: `1px solid ${ACCENT_COLOR}`,
-            paddingBottom: '8px',
-            marginBottom: '20px',
+            paddingBottom: '10px', // 확대
+            marginBottom: '22px', // 확대
             display: 'flex',
             alignItems: 'center',
             gap: '10px'
         },
         summaryText: {
             fontSize: '14px',
-            lineHeight: 1.8,
-            color: '#333',
-            textAlign: 'justify'
+            lineHeight: 1.85, // 줄간격 확대
+            color: TEXT_MUTED,
+            textAlign: 'justify',
+            fontWeight: '300'
         },
         expItem: {
-            marginBottom: '25px',
+            marginBottom: '28px', // 항목 간격 확대
             display: 'grid',
             gridTemplateColumns: '180px 1fr',
-            gap: '20px'
+            gap: '24px' // 확대
         },
         expDate: {
-            fontSize: '13px',
-            color: TEXT_MUTED,
+            fontSize: '12px',
+            color: ACCENT_COLOR, // 골드로 날짜 강조
             fontWeight: '700',
             textAlign: 'right',
-            paddingTop: '3px'
+            paddingTop: '3px',
+            letterSpacing: '0.5px'
         },
         expContent: {
             display: 'flex',
             flexDirection: 'column',
-            gap: '5px'
+            gap: '6px' // 약간 확대
         },
         expRole: {
             fontSize: '15px',
             fontWeight: '700',
             color: PRIMARY_COLOR,
-            fontFamily: "'Merriweather', serif"
+            fontFamily: "'Merriweather', serif",
+            letterSpacing: '-0.2px'
         },
         expCompany: {
-            fontSize: '14px',
+            fontSize: '13px',
             fontStyle: 'italic',
-            color: '#444'
+            color: TEXT_MUTED
         },
         expDesc: {
             fontSize: '13px',
-            lineHeight: 1.6,
-            color: '#444',
+            lineHeight: 1.75, // 줄간격 확대
+            color: TEXT_MUTED,
             marginTop: '5px'
         },
         skillGrid: {
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '12px'
+            gap: '10px'
         },
         skillTag: {
             border: `1px solid ${BORDER_COLOR}`,
-            borderRadius: '4px',
+            borderRadius: '2px', // 직각에 가까운 형태 (클래식)
             padding: '6px 14px',
-            fontSize: '12px',
-            background: '#fcfcfc',
-            color: '#333'
+            fontSize: '11px',
+            background: '#fafbfc',
+            color: PRIMARY_COLOR,
+            fontWeight: '500',
+            letterSpacing: '0.3px'
         },
         eduItem: {
-            marginBottom: '15px',
+            marginBottom: '18px', // 확대
             display: 'flex',
             justifyContent: 'space-between',
-            borderBottom: `1px dashed ${BORDER_COLOR}`,
-            paddingBottom: '10px'
+            borderBottom: `1px solid ${BORDER_COLOR}`, // dashed → solid (클래식)
+            paddingBottom: '14px' // 확대
         }
     };
 
