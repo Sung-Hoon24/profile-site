@@ -6,7 +6,6 @@
  */
 
 const functions = require('firebase-functions');
-const fetch = require('node-fetch');
 
 // PortOne Credentials (Set via firebase functions:config:set portone.key="..." portone.secret="...")
 const PORTONE_API_KEY = functions.config().portone?.key || process.env.PORTONE_API_KEY;
@@ -240,7 +239,14 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
  */
 exports.lemonSqueezyWebhook = functions.https.onRequest(async (req, res) => {
     const crypto = require('crypto');
-    const secret = functions.config().lemonsqueezy?.secret || process.env.LEMON_SQUEEZY_SECRET || "silver-castle-secret-key-1234";
+
+    // config에서 시크릿 읽기 (하드코딩 fallback 완전 제거)
+    const secret = functions.config().lemonsqueezy?.secret;
+    if (!secret) {
+        functions.logger.error('🍋 [LEMON_FAIL] Webhook secret이 config에 설정되지 않음');
+        res.status(500).send('Webhook secret not configured');
+        return;
+    }
 
     // 1. Validate Signature
     const hmac = crypto.createHmac('sha256', secret);
@@ -322,15 +328,17 @@ exports.lemonSqueezyWebhook = functions.https.onRequest(async (req, res) => {
  *  - CORS 허용목록 기반 제어
  */
 exports.kakaoTokenExchange = functions.https.onRequest(async (req, res) => {
-    // ─── CORS 처리 (허용 오리진 기반) ───
-    const allowedOrigins = [
-        // 프로덕션 도메인 (firebase.json hosting 기준)
-        'https://my-awesome-site-f3f94.web.app',
-        'https://my-awesome-site-f3f94.firebaseapp.com',
-        // 로컬 개발용
-        'http://localhost:5173',
-        'http://localhost:3000'
-    ];
+    // ─── CORS 처리 (허용 오리진 — config 기반) ───
+    const originsConfig = functions.config().app?.allowed_origins;
+    if (!originsConfig) {
+        functions.logger.error('[KAKAO_TOKEN] app.allowed_origins가 config에 설정되지 않음');
+        res.status(500).json({ error: 'config_missing', message: 'CORS allowed origins not configured', stage: 'config' });
+        return;
+    }
+    // 쉼표 구분 문자열 또는 배열 모두 수용
+    const allowedOrigins = Array.isArray(originsConfig)
+        ? originsConfig
+        : originsConfig.split(',').map(o => o.trim());
 
     const origin = req.headers.origin || '';
 
@@ -448,14 +456,12 @@ exports.kakaoTokenExchange = functions.https.onRequest(async (req, res) => {
         functions.logger.info(`[KAKAO_TOKEN] Stage: mint — Custom Token 발급 성공 (uid: ${firebaseUid})`);
 
         // ─── 응답 반환 ───
-        // 프론트 호환: KakaoCallback.jsx가 access_token을 기대하므로 포함
-        // 보안 주의: access_token은 클라이언트에서 Kakao SDK용으로만 사용
+        // Phase 3.4: access_token 제거 (완전 보안) — 프론트가 signInWithCustomToken으로 전환 완료
         // 캐시 방지: 토큰이 브라우저/프록시 캐시에 남지 않도록 차단
         res.set('Cache-Control', 'no-store');
         res.set('Pragma', 'no-cache');
         res.status(200).json({
-            access_token: kakaoAccessToken,        // 프론트 호환용 (기존 KakaoCallback.jsx)
-            firebaseCustomToken: firebaseCustomToken, // 향후 Firebase Auth 마이그레이션용
+            firebaseCustomToken: firebaseCustomToken,
             kakaoUserId: String(kakaoUserId),
             issuedAt: Date.now()
         });
