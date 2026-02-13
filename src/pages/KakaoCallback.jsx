@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInAnonymously } from 'firebase/auth';
+import { signInWithCustomToken } from 'firebase/auth'; // Phase 3.4: Anonymous → Custom Token 전환
 import { auth } from '../../firebase';
 import { useResume } from '../context/ResumeContext';
 
@@ -42,13 +42,11 @@ const KakaoCallback = () => {
                     throw new Error('인증 코드가 없습니다');
                 }
 
-                setStatus('액세스 토큰 요청 중...');
+                setStatus('서버에 토큰 교환 요청 중...');
 
-                // Call Cloud Function to exchange code for token
-                // In production: use the deployed function URL
-                // For local dev: use emulator or deployed function
+                // Cloud Function 호출: code → firebaseCustomToken 교환
                 const functionUrl = import.meta.env.PROD
-                    ? '/api/kakao-token'  // Production: rewrite to function
+                    ? '/api/kakao-token'  // 프로덕션: firebase.json rewrite
                     : `https://us-central1-my-awesome-site-f3f94.cloudfunctions.net/kakaoTokenExchange`;
 
                 const tokenResponse = await fetch(functionUrl, {
@@ -62,32 +60,27 @@ const KakaoCallback = () => {
 
                 const tokenData = await tokenResponse.json();
 
+                // 서버 에러 응답 처리
                 if (tokenData.error) {
-                    throw new Error(`토큰 교환 실패: ${tokenData.error_description || tokenData.error}`);
+                    throw new Error(`토큰 교환 실패: ${tokenData.message || tokenData.error}`);
                 }
 
-                setStatus('사용자 정보 요청 중...');
+                // 서버 응답에서 firebaseCustomToken과 kakaoUserId 수신
+                const { firebaseCustomToken, kakaoUserId } = tokenData;
 
-                // Set access token in SDK
-                window.Kakao.Auth.setAccessToken(tokenData.access_token);
+                if (!firebaseCustomToken) {
+                    throw new Error('서버에서 Firebase 인증 토큰을 받지 못했습니다');
+                }
 
-                // SDK v2.7.4: Kakao.API.request() returns a Promise directly
-                const userInfo = await window.Kakao.API.request({
-                    url: '/v2/user/me',
-                });
+                setStatus('Firebase 인증 중...');
 
-                const kakaoId = userInfo.id;
-                console.log('Kakao User ID:', kakaoId);
-
-                setStatus('Firebase 연결 중...');
-
-                // Bridge to Firebase Anonymous Auth
-                await signInAnonymously(auth);
-                setCustomDocId(`kakao_${kakaoId}`);
+                // Phase 3.4: Firebase Custom Token으로 직접 인증 (Anonymous 제거)
+                await signInWithCustomToken(auth, firebaseCustomToken);
+                setCustomDocId(`kakao_${kakaoUserId}`);
 
                 setStatus('로그인 성공! 리다이렉트 중...');
 
-                // Redirect to main app
+                // 메인 앱으로 리다이렉트
                 setTimeout(() => {
                     navigate('/resume?logged_in=kakao');
                 }, 500);
